@@ -177,14 +177,13 @@ $(document).ready(function() {
 
 		// Check 'net connection
 		if (fimfic.isLoggedIn) {
-			$('#status').text("Read Later list obtained");
+			$('#status').text("Read Later list obtained").delay(5000).fadeOut(400);
 		} else if (fimfic.isOnline) {
 			$('#status').text("You need to login to fimfiction to use this site");
 		} else {
 			$('#status').text("You need internet access to download stories (or cross-site ajax error)");
 			// or, you know, the cross-site xmlhttprequest hasn't been setup yet
 		}
-		$('#status').delay(5000).fadeOut(400);
 
 		fimfic.updateStories();
 
