@@ -1,0 +1,56 @@
+body {
+	background-color: #eee8d8; /* yep, direct lift from fimfiction, I'm a terrible person etc */
+	background-image: url('../img/content_background.png');
+
+	font-family: sans-serif;
+}
+
+#wrapper {
+	padding: 10pt;
+}
+
+#spinner-wrap {
+	margin: 0 auto;
+	width: 0; /* hacky, check later */
+	float: left;
+}
+#status {
+	position: fixed;
+	right: 10pt;
+	bottom: 0;
+
+	width: 100%;
+	padding: 10pt 0;
+	text-align: center;
+
+	background: #222;
+	color: #eee;
+}
+
+h1 {
+	font-size: 2em;
+	margin-bottom: 8pt;
+}
+
+.story {
+	padding: 10pt;
+	background-color: #dfd9c9;
+	color: #38362f;
+	border-radius: 8px;
+	margin-bottom: 10pt;
+	font-size: 85%;
+	box-shadow: 0px 1px 2px #38363f;
+}
+.story .head h2 {
+	display: inline-block;
+	font-size: 120%;
+	margin-bottom: 6pt;
+	color: #38352f;
+	font-weight: bold;
+}
+.story .body {
+	margin: 3pt -8.5pt -8pt -8.5pt;
+	padding: 8pt;
+	background-color: #fff;
+	border-radius: 0 0 5pt 5pt;
+}
