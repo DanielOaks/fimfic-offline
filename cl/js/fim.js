@@ -177,7 +177,7 @@ $(document).ready(function() {
 
 		// Check 'net connection
 		if (fimfic.isLoggedIn) {
-			$('#status').text("Checking Read Later list");
+			$('#status').text("Read Later list obtained");
 		} else if (fimfic.isOnline) {
 			$('#status').text("You need to login to fimfiction to use this site");
 		} else {
