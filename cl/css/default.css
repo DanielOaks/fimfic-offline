@@ -80,6 +80,7 @@ h1 {
 }
 .story .head .statbulb.notready {
 	background: #b22;
+	box-shadow: 0px 0px 10px #b22;
 }
 .story .head .statbulb.loading {
 	-webkit-animation: bulb_blink 2s infinite;
@@ -89,24 +90,25 @@ h1 {
 }
 .story .head .statbulb.ready {
 	background: #2b2;
+	box-shadow: 0px 0px 10px #2b2;
 }
 @-webkit-keyframes bulb_blink {
-	0%   { background: #bb2; }
-	50%  { background: #442; }
-	100% { background: #bb2; }
+	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
+	50%  { background: #442; box-shadow: 0px 0px 5px  #442; }
+	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
 }
 @-moz-keyframes bulb_blink {
-	0%   { background: #bb2; }
-	50%  { background: #442; }
-	100% { background: #bb2; }
+	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
+	50%  { background: #442; box-shadow: 0px 0px 5px  #442; }
+	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
 }
 @-ms-keyframes bulb_blink {
-	0%   { background: #bb2; }
-	50%  { background: #442; }
-	100% { background: #bb2; }
+	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
+	50%  { background: #442; box-shadow: 0px 0px 5px  #442; }
+	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
 }
 @-o-keyframes bulb_blink {
-	0%   { background: #bb2; }
-	50%  { background: #442; }
-	100% { background: #bb2; }
+	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
+	50%  { background: #442; box-shadow: 0px 0px 5px  #442; }
+	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
 }
