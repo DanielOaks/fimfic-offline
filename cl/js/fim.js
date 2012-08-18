@@ -84,8 +84,6 @@ var fimfic = {
 			var parsedhtml = $(html);
 			fimfic.checkLoggedIn(parsedhtml);
 
-			$('#content').append($('<div id="stories"></div>'));
-
 			// the following code loops over each row of story table, and manually extracts story data
 			$.each($(parsedhtml).find('#archive_table').children('tbody').children(), function() {
 				var id = $(this).find('u a').attr('href').split('/')[2];
@@ -101,24 +99,6 @@ var fimfic = {
 					'description': description,
 					'author': author
 				});
-
-				story = $('<div class="story"></div>');
-
-
-				storyheader = $('<div class="head"></div>');
-				story.append(storyheader);
-
-				storyheader.append($('<h2></h2>').text(title));
-				storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
-				storyheader.append($('<span class="author"></span>').text(author));
-
-
-				storybody = $('<div class="body"></div>');
-				story.append(storybody);
-
-				storybody.append($('<span class="description"></span>').text(description));
-
-				$('#stories').append(story);
 			});
 
 			fimfic.listStoriesStatus = 'success';
@@ -131,6 +111,34 @@ var fimfic = {
 			fimfic.isLoggedIn = false;
 			fimfic.listStoriesStatus = 'success';
 			callback.call();
+		});
+	},
+
+	showListedStories: function () {
+		$('#content').append($('<div id="stories"></div>'));
+
+		$.each(fimfic.listedStories, function() {
+
+			story = $('<div class="story"></div>');
+
+
+			storyheader = $('<div class="head"></div>');
+			story.append(storyheader);
+
+			// <div class="statback"><div class="statbulb ready"></div></div>
+			storyheader.append($('<div class="statback"><div class="statbulb notready"></div></div>'));
+
+			storyheader.append($('<h2></h2>').text(this.title));
+			storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
+			storyheader.append($('<span class="author"></span>').text(this.author));
+
+
+			storybody = $('<div class="body"></div>');
+			story.append(storybody);
+
+			storybody.append($('<span class="description"></span>').text(this.description));
+
+			$('#stories').append(story);
 		});
 	},
 
@@ -158,19 +166,29 @@ $(document).ready(function () {
 	fimfic.initDatabase();
 
 	fimfic.updateStories(function (code) {
+		fimfic.showListedStories();
 
 		// Check 'net connection
 		if (fimfic.isLoggedIn) {
 			if (fimfic.listStoriesStatus == 'success') {
-				$('#status').text("Read Later list obtained").delay(4000).fadeOut(400);
+				$('#status span').fadeOut(400, function () {
+					$('#status span').text("Read Later list obtained").fadeIn();
+				});
+
+				$('#status').delay(4000).fadeOut(400);
 			} else {
-				$('#status').text("Failed to access Read Later list");
+				$('#status span').fadeOut(400, function () {
+					$('#status span').text("Failed to access Read Later list").fadeIn();
+				});
 			}
 		} else if (fimfic.isOnline) {
-			$('#status').text("You need to login to fimfiction to use this site");
+			$('#status span').fadeOut(400, function () {
+				$('#status span').text("You need to login to fimfiction to use this site").fadeIn();
+			});
 		} else {
-			$('#status').text("You need internet access to download stories (or cross-origin ajax error)");
-			// or, you know, the cross-site xmlhttprequest hasn't been setup yet
+			$('#status span').fadeOut(400, function () {
+				$('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
+			});
 		}
 
 	});
