@@ -330,6 +330,19 @@ $(document).ready(function () {
     $('body').addClass('light');
     $('body').addClass('serif');
 
+    $(document).on('click', '#story-controls .back-from-story', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        $('#story-controls').slideUp(400, function () {
+            $('#story-controls').remove();
+        });
+        $('#current_story').slideUp(400, function () {
+            $(this).remove();
+            $('#stories').slideDown();
+        });
+
+    });
+
     $(document).on('click', '#story-controls .change-color', function(event) {
         event.preventDefault(); // stop href from messing up things
 
@@ -382,7 +395,7 @@ $(document).ready(function () {
 
                     fimfic.story_html.get(story_id, true, function (html) {
                         $('#current_story .body').append($(html));
-                        $('body').append($('<div id="story-controls"><a class="change change-color" href="http://danneh.net">f</a><a class="change change-font" href="http://danneh.net">s</a><a class="change change-smaller" href="http://danneh.net">-</a><a class="change change-larger" href="http://danneh.net">+</a></div>'));
+                        $('body').append($('<div id="story-controls"><a class="change back-from-story" href="http://danneh.net">&lt;</a><a class="change change-color" href="http://danneh.net">b</a><a class="change change-font" href="http://danneh.net">f</a><a class="change change-smaller" href="http://danneh.net">-</a><a class="change change-larger" href="http://danneh.net">+</a></div>'));
                         $('#fim-bar').hide().slideDown();
 
                         var toDelete = [];

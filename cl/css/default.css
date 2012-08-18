@@ -233,7 +233,7 @@ h1 {
 #story-controls .change:last-child {
 	border-radius: 0 5pt 0 0;
 }
-.light #story-controls .change-color {
+/*.light #story-controls .change-color {
 	background: #333;
 	color: #fff;
 }
@@ -247,7 +247,7 @@ h1 {
 .dark #story-controls .change-color:hover {
 	background: #aaa !important;
 }
-.serif #story-controls .change-font {
+/*.serif #story-controls .change-font {
 	font-family: Helvetica, sans-serif;
 }
 .sans #story-controls .change-font {
@@ -255,4 +255,4 @@ h1 {
 }
 .mono #story-controls .change-font {
 	font-family: Georgia, serif;
-}
+}*/
