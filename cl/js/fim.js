@@ -333,12 +333,12 @@ $(document).ready(function () {
     $(document).on('click', '#story-controls .back-from-story', function(event) {
         event.preventDefault(); // stop href from messing up things
 
-        $('#story-controls').slideUp(400, function () {
+        $('#story-controls').slideUp(200, function () {
             $('#story-controls').remove();
-        });
-        $('#current_story').slideUp(400, function () {
-            $(this).remove();
-            $('#stories').slideDown();
+            $('#current_story').fadeOut(200, function () {
+                $(this).remove();
+                $('#stories').fadeIn();
+            });
         });
 
     });
@@ -375,7 +375,7 @@ $(document).ready(function () {
         if ($(this).find('.statbulb').hasClass('ready') || $(this).find('.statbulb').hasClass('dbcached')) {
             var story_id = parseInt($(this).attr('fim_id'));
 
-            $('#stories').slideUp(400, function () {
+            $('#stories').fadeOut(200, function () {
                 var current_story = $('<div id="current_story"></div>').hide();
                 $('#content').append(current_story);
                 $('#current_story').append($('<div class="head"></div>'));
@@ -396,7 +396,7 @@ $(document).ready(function () {
                     fimfic.story_html.get(story_id, true, function (html) {
                         $('#current_story .body').append($(html));
                         $('body').append($('<div id="story-controls"><a class="change back-from-story" href="http://danneh.net">&lt;</a><a class="change change-color" href="http://danneh.net">b</a><a class="change change-font" href="http://danneh.net">f</a><a class="change change-smaller" href="http://danneh.net">-</a><a class="change change-larger" href="http://danneh.net">+</a></div>'));
-                        $('#fim-bar').hide().slideDown();
+                        $('#story-controls').hide();
 
                         var toDelete = [];
                         var continueAddingItems = true;
@@ -415,7 +415,9 @@ $(document).ready(function () {
                                         $($('#current_story .body').children()[value-offset]).remove();
 
                                         if (index == (toDelete.length-1)) {
-                                            $('#current_story').slideDown();
+                                            $('#current_story').fadeIn(200, function () {
+                                                $('#story-controls').slideDown(200)
+                                            });
                                         } else {
                                             offset += 1;
                                         }
