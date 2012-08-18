@@ -27,7 +27,7 @@ var fimfic = {
 		});
 
 
-		request.done(function(html) {
+		request.done(function (html) {
 			fimfic.isOnline = true;
 
 			var parsedhtml = $(html);
@@ -37,7 +37,7 @@ var fimfic = {
 		});
 
 
-		request.fail(function(jqXHR, textStatus) {
+		request.fail(function (jqXHR, textStatus) {
 			fimfic.isOnline = false;
 			fimfic.isLoggedIn = false;
 
@@ -60,8 +60,11 @@ var fimfic = {
 	updateStories: function (callback) {
 		console.log("Returning stories in user's Read Later list");
 
-		fimfic.listStories(function () {
-			callback.call();
+		fimfic.listStories(function (code) {
+
+			// replace db stories with listed stories
+
+			callback.call(code);
 		});
 	},
 
@@ -75,7 +78,7 @@ var fimfic = {
 		fimfic.listedStories = [] // Will either get populated by .done, or be left blank
 
 
-		request.done(function(html) {
+		request.done(function (html) {
 			fimfic.isOnline = true;
 
 			var parsedhtml = $(html);
@@ -118,11 +121,15 @@ var fimfic = {
 				$('#stories').append(story);
 			});
 
+			fimfic.listStoriesStatus = 'success';
 			callback.call();
 		});
 
 
 		request.fail(function(jqXHR, textStatus) {
+			fimfic.isOnline = false;
+			fimfic.isLoggedIn = false;
+			fimfic.listStoriesStatus = 'success';
 			callback.call();
 		});
 	},
@@ -146,15 +153,19 @@ var fimfic = {
 }
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 	// Initialise database, if not done so already
 	fimfic.initDatabase();
 
-	fimfic.updateStories(function() {
+	fimfic.updateStories(function (code) {
 
 		// Check 'net connection
 		if (fimfic.isLoggedIn) {
-			$('#status').text("Read Later list obtained").delay(5000).fadeOut(400);
+			if (fimfic.listStoriesStatus == 'success') {
+				$('#status').text("Read Later list obtained").delay(4000).fadeOut(400);
+			} else {
+				$('#status').text("Failed to access Read Later list");
+			}
 		} else if (fimfic.isOnline) {
 			$('#status').text("You need to login to fimfiction to use this site");
 		} else {
