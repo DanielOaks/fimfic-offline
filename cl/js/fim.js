@@ -56,7 +56,7 @@ var fimfic = {
                     transaction.createObjectStore('meta');
                     transaction.createObjectStore('story_info');
                     transaction.createObjectStore('story_html');
-                    //transaction.createObjectStore('story_pics');
+                    transaction.createObjectStore('story_pics');
                 }
             }
         }).done(function (db, event) {
@@ -107,6 +107,8 @@ var fimfic = {
                 });
             });
 
+            fimfic.listedStories = fimfic.listedStories.slice(0, 3); // TEST CODE, to minimise the impact on FimFic
+
             fimfic.listStoriesStatus = 'success';
             callback.call();
         });
@@ -154,7 +156,6 @@ var fimfic = {
     //  and modifies the page elements as necessary
     recurseListedStories: function (callback) {
         var currentStory = fimfic.listedStories.shift(); // pops first story off into currectStory
-        console.log('recurse story: ' + currentStory.id);
 
         var bulb = $('#stories .story[fim_id="'+currentStory.id+'"] .statbulb');
         $(bulb).removeClass('notready').addClass('loading');
@@ -162,28 +163,44 @@ var fimfic = {
         var currentJSON = $.getJSON('http://www.fimfiction.net/api/story.php?story=' + currentStory.id);
 
         currentJSON.success(function (data) {
-            $(bulb).removeClass('loading').addClass('ready');
-            console.log('    ' + data.story.title);
+            // pop old id off story_info and compare to new info
+            // if necessary, update the html for the story and continue
+            fimfic.story_info.get(data.story.id, false, function (value) {
+                value = ((typeof value === "undefined") || (value === null)) ? [] : value;
+                if (value.length > 0) {
+                    console.log('return value found: ', value);
+                }
+                fimfic.story_info.add(data.story.id, data.story);
 
-            //fimfic.story_info.put(currentStory.id, data.story);
-            fimfic.story_info.add(data.story.id, data.story);
-            //$.indexedDB('fimfic_offline').objectStore('story_info').put(756, 'data.story');
+                // if story has new chapters, has updated, etc
+                fimfic.should_get_html(value, data.story, function (getHtml) {
+                    if (getHtml) {
+                        // download new html, etc
+                        console.log('we need to download new html, then');
 
+                        var request = $.ajax({
+                            url: 'http://www.fimfiction.net/download_story.php?story='+data.story.id+'&html'
+                        });
 
-            //fimfic.transaction = db.transaction(['meta', 'story_info', 'story_html'])
+                        request.done(function (html) {
+                            html = html.split('</head>')[1]; // so it's easier to integrate later
+                            fimfic.story_html.add(data.story.id, html, true);
 
-            //fimfic.meta       = fimfic.transaction.objectStore('meta');
-            //fimfic.story_info = fimfic.transaction.objectStore('story_info');
-            //fimfic.story_html = fimfic.transaction.objectStore('story_html');
+                            fimfic.recurseListedStoriesFinish(bulb, callback);
+                        });
 
-            if (fimfic.listedStories.length > 0) {
-                //fimfic.recurseListedStories(function () {
-                //    callback.call();
-                //});
-                callback.call(); // for now, only do one story, no recursion
-            } else {
-                callback.call();
-            }
+                        request.fail(function (jqXHR, textStatus) {
+                            console.log('html retrieval failed, ', data.story.id, jqXHR, textStatus);
+
+                            fimfic.recurseListedStoriesFinish(bulb, callback);
+                        });
+
+                    } else {
+                        console.log("nah, we're fine for new html, thanks");
+                        fimfic.recurseListedStoriesFinish(bulb, callback);
+                    }
+                });
+            });
         });
 
         currentJSON.error(function () {
@@ -196,23 +213,40 @@ var fimfic = {
                 callback.call();
             }
         });
+    },
 
+    // need this because of the async html-grabbing method
+    recurseListedStoriesFinish: function (bulb, callback) {
+        // do after we finish /all/ other work
+        $(bulb).removeClass('loading').addClass('ready');
 
+        if (fimfic.listedStories.length > 0) {
+            fimfic.recurseListedStories(function () {
+                callback.call();
+            });
+            //callback.call(); // for now, only do one story, no recursion
+        } else {
+            callback.call();
+            // should put delays on there to keep from hammering FimFic's servers as much?
+            //  talk to FimFic's server admin to discuss this and other methods
+        }
+    },
 
-
-
-        /*fimfic.db = $.indexedDB("fimfic_offline", {
-            "version": 84,
-            "upgrade": function(transaction) {
-                // initialise database, if not already done so
-                console.log('Database Initialising')
-                transaction.createObjectStore("meta"); // stores app metadata, list of cached stories and such
-
-                transaction.createObjectStore("story_info"); // stores story info, metadata and such (think fimfiction API)
-                transaction.createObjectStore("story_html"); // stores the actual story html
-                //transaction.createObjectStore("story_image"); // stores the story images
+    // checks to see whether we should get new story html
+    should_get_html: function (oldData, newData, callback) {
+        fimfic.story_html.get(newData.id, true, function (value) {
+            // new story, no html stored yet
+            if (value === null) {
+                callback.call(this, true);
             }
-        });*/
+
+            // updated story
+            if (newData.date_modified > oldData.date_modified) {
+                callback.call(this, true);
+            } else {
+                callback.call(this, false);
+            }
+        })
     },
 
 
@@ -233,22 +267,62 @@ var fimfic = {
         }
     },
 
-    // story_info class, for nice calling and json conversion junk below
+    // abstraction classes, to abstract out generic_store below
     story_info: {
-        add: function (id, info, isString) {
-            isString = (typeof isString === "undefined") ? false : isString;
+        add: function (id, value, isString) {
+            fimfic.generic_store.add('story_info', id, value, isString);
+        }, 
+        get: function (id, isString, callback) {
+            fimfic.generic_store.get('story_info', id, isString, function (value) {
+                callback.call(this, value);
+            });
+        }
+    },
+    story_html: {
+        add: function (id, value, isString) {
+            fimfic.generic_store.add('story_html', id, value, isString);
+        }, 
+        get: function (id, isString, callback) {
+            fimfic.generic_store.get('story_html', id, isString, function (value) {
+                callback.call(this, value);
+            });
+        }
+    },
 
-            console.log('adding info: id ' + id);
-            console.log(info);
+    // need this to deal with stuff like json conversion automatically
+    generic_store: {
+        add: function (store, id, value, isString) {
+            isString = (typeof isString === "undefined") ? false : isString;
 
             if (!isString) {
                 // convert to a string
-                info = $.toJSON(info)
+                value = $.toJSON(value)
             }
             
-            $.indexedDB('fimfic_offline').objectStore('story_info').put(info, id);
+            $.indexedDB('fimfic_offline').objectStore(store).put(value, id);
             // dunno why, but Chrome seems to barf if indexeddb holds actual data, rather than
             //  a plain old string... Implicitly convert stuff to strings, herpa
+        },
+
+        get: function (store, id, isString, callback) {
+            isString = (typeof isString === "undefined") ? false : isString;
+
+            var promise = $.indexedDB('fimfic_offline').objectStore(store).get(id);
+
+            promise.done(function (value, event) {
+                if (!isString) {
+                    // turn back into object from json storage
+                    value = $.parseJSON(value);
+                }
+
+                callback.call(this, value);
+            });
+
+            promise.fail(function (error, event) {
+                console.log('generic_store.get failed: ', store, id, isString, error, event);
+
+                callback.call(null);
+            });
         }
     }
 }
@@ -268,13 +342,14 @@ $(document).ready(function () {
             if (fimfic.isLoggedIn) {
                 if (fimfic.listStoriesStatus == 'success') {
                     $('#status span').fadeOut(400, function () {
-                        $('#status span').text("Read Later list obtained").fadeIn();
+                        $('#status span').text("Checking whether anything's updated").fadeIn();
                     });
 
-                    $('#status').delay(4000).fadeOut(400);
-
                     fimfic.recurseListedStories(function () {
-                        console.log('Finished!');
+                        $('#status span').fadeOut(400, function () {
+                            $('#status span').text("Finished!").fadeIn();
+                        });
+                        $('#status').delay(4000).fadeOut(400);
                     });
 
                 } else {
