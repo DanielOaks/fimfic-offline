@@ -83,11 +83,29 @@ h1 {
 }
 .story .head .statbulb.loading {
 	-webkit-animation: bulb_blink 2s infinite;
+	-moz-animation: bulb_blink 2s infinite;
+	-ms-animation: bulb_blink 2s infinite;
+	-o-animation: bulb_blink 2s infinite;
 }
 .story .head .statbulb.ready {
 	background: #2b2;
 }
 @-webkit-keyframes bulb_blink {
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
+}
+@-moz-keyframes bulb_blink {
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
+}
+@-ms-keyframes bulb_blink {
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
+}
+@-o-keyframes bulb_blink {
 	0%   { background: #bb2; }
 	50%  { background: #442; }
 	100% { background: #bb2; }
