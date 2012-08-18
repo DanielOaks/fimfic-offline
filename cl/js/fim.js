@@ -347,6 +347,12 @@ $(document).ready(function () {
                     $('#current_story .head').append($('<span>&nbsp;&nbsp;by </span>'));
                     $('#current_story .head').append($('<span class="author"></span>').text(value.author.name));
 
+                    // that whole dragons-be-here code down there basically culls everything from
+                    //  the start of the story html but the h1 and h3.
+                    // h1 because that's the story title, and we hijack that to make the h3,
+                    //  the chapter title, display properly. the other elements FimFic adds are
+                    //  probably useful, but for now they just mess up layout
+
                     fimfic.story_html.get(story_id, true, function (html) {
                         $('#current_story .body').append($(html));
 
