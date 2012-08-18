@@ -40,6 +40,7 @@ h1 {
 	margin-bottom: 10pt;
 	font-size: 85%;
 	box-shadow: 0px 1px 2px #38363f;
+	cursor: pointer;
 }
 .story .head {
 	margin-right: 20px;
@@ -177,4 +178,78 @@ h1 {
 }
 #current_story .body p.double {
 	margin-top: 1.5em;
+}
+
+
+.light #current_story .body {
+	background: #fff;
+	color: #000;
+}
+.dark #current_story .body {
+	background: #222;
+	color: #eee;
+}
+.dark #current_story .body a {
+	color: #55f
+}
+
+.serif #current_story .body {
+	font-family: Georgia, serif;
+}
+.sans #current_story .body {
+	font-family: Helvetica, sans-serif;
+}
+.mono #current_story .body {
+	font-family: monospace;
+}
+
+
+#story-controls {
+	display: block;
+
+	position: fixed;
+	right: 10pt;
+	bottom: 0;
+
+	background: #333;
+	color: #eee;
+
+	border-radius: 5pt 5pt 0 0;
+	box-shadow: 0px 0px 0px 1px #000;
+}
+
+#story-controls .change {
+	display: inline-block !important;
+	padding: 8pt 15pt;
+	text-decoration: none;
+	color: #fff;
+}
+#story-controls .change:hover {
+	background: #555;
+}
+#story-controls .change:first-child {
+	border-radius: 5pt 0 0 0;
+}
+#story-controls .change:last-child {
+	border-radius: 0 5pt 0 0;
+}
+.light #story-controls .change-color {
+	background: #333;
+	color: #fff;
+}
+.dark #story-controls .change-color {
+	background: #ccc;
+	color: #222 !important;
+}
+.dark #story-controls .change-color:hover {
+	background: #aaa !important;
+}
+.serif #story-controls .change-font {
+	font-family: Helvetica, sans-serif;
+}
+.sans #story-controls .change-font {
+	font-family: monospace;
+}
+.mono #story-controls .change-font {
+	font-family: Georgia, serif;
 }

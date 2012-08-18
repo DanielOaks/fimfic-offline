@@ -176,8 +176,6 @@ var fimfic = {
                 fimfic.should_get_html(value, data.story, function (getHtml) {
                     if (getHtml) {
                         // download new html, etc
-                        console.log('we need to download new html, then');
-
                         var request = $.ajax({
                             url: 'http://www.fimfiction.net/download_story.php?story='+data.story.id+'&html'
                         });
@@ -196,7 +194,6 @@ var fimfic = {
                         });
 
                     } else {
-                        console.log("nah, we're fine for new html, thanks");
                         fimfic.recurseListedStoriesFinish(bulb, callback);
                     }
                 });
@@ -330,9 +327,40 @@ var fimfic = {
 
 $(document).ready(function () {
 
+    // fim bar
+    $('body').addClass('light');
+    $('body').addClass('serif');
+
+    $(document).on('click', '#story-controls .change-color', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        if ( $('body').hasClass('light') ) {
+            $('body').removeClass('light');
+            $('body').addClass('dark');
+        } else {
+            $('body').addClass('light');
+            $('body').removeClass('dark');
+        }
+    });
+
+    $(document).on('click', '#story-controls .change-font', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        if ( $('body').hasClass('serif') ) {
+            $('body').removeClass('serif');
+            $('body').addClass('sans');
+        } else if ( $('body').hasClass('sans') ) {
+            $('body').removeClass('sans');
+            $('body').addClass('mono');
+        } else {
+            $('body').removeClass('mono');
+            $('body').addClass('serif');
+        }
+    });
+
     // setup story click handlers
     $(document).on('click', '#stories .story', function(event) {
-        if ($(this).find('.statbulb').hasClass('ready')) {
+        if ($(this).find('.statbulb').hasClass('ready') || $(this).find('.statbulb').hasClass('dbcached')) {
             var story_id = parseInt($(this).attr('fim_id'));
 
             $('#stories').slideUp(400, function () {
@@ -355,6 +383,8 @@ $(document).ready(function () {
 
                     fimfic.story_html.get(story_id, true, function (html) {
                         $('#current_story .body').append($(html));
+                        $('body').append($('<div id="story-controls"><a class="change change-color" href="http://danneh.net">f</a><a class="change change-font" href="http://danneh.net">s</a></div>'));
+                        $('#fim-bar').hide().slideDown();
 
                         var toDelete = [];
                         var continueAddingItems = true;
@@ -362,13 +392,13 @@ $(document).ready(function () {
                             if (continueAddingItems) {
                                 if (!($(value).is('h1') || $(value).is('h3'))) {
                                     toDelete.push(index);
-                                    console.log('delete item at index '+index);
                                 }
                                 if ($(value).is('h3')) {
                                     continueAddingItems = false;
 
+                                    $(value).text($(value).text().slice(9)); // remove Chapter: from start of header
+
                                     var offset = 0;
-                                    console.log('todelete: ', toDelete);
                                     $.each(toDelete, function (index, value) {
                                         $($('#current_story .body').children()[value-offset]).remove();
 
