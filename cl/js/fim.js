@@ -46,24 +46,26 @@ var fimfic = {
     }, 
 
     // init fimfic database
-    initDatabase: function () {
-        fimfic.db = $.indexedDB("fimfic_offline", {
-            "version": 84,
-            "upgrade": function(transaction) {
-                // initialise database, if not already done so
-                console.log('Database Initialising')
-                transaction.createObjectStore("meta"); // stores app metadata, list of cached stories and such
+    initDatabase: function (callback) {
+        //$.indexedDB("fimfic_offline").deleteDatabase();
 
-                transaction.createObjectStore("story_info"); // stores story info, metadata and such (think fimfiction API)
-                transaction.createObjectStore("story_html"); // stores the actual story html
+        $.indexedDB('fimfic_offline', {
+            'version': 2,
+            'schema': {
+                '1': function (transaction) {
+                    transaction.createObjectStore('meta');
+                    transaction.createObjectStore('story_info');
+                    transaction.createObjectStore('story_html');
+                    //transaction.createObjectStore('story_pics');
+                }
             }
+        }).done(function (db, event) {
+            callback.call();
         });
     },
 
     // update list of stories
     updateStories: function (callback) {
-        console.log("Returning stories in user's Read Later list");
-
         fimfic.listStories(function (code) {
 
             // replace db stories with listed stories
@@ -118,6 +120,8 @@ var fimfic = {
         });
     },
 
+    // put stories from fimfic.listedStories into the page
+    //  typically called right after listStories
     showListedStories: function () {
         $('#content').append($('<div id="stories"></div>'));
 
@@ -146,6 +150,72 @@ var fimfic = {
         });
     },
 
+    // recursively grabs the story info from listedStories, downloads the necessary info
+    //  and modifies the page elements as necessary
+    recurseListedStories: function (callback) {
+        var currentStory = fimfic.listedStories.shift(); // pops first story off into currectStory
+        console.log('recurse story: ' + currentStory.id);
+
+        var bulb = $('#stories .story[fim_id="'+currentStory.id+'"] .statbulb');
+        $(bulb).removeClass('notready').addClass('loading');
+
+        var currentJSON = $.getJSON('http://www.fimfiction.net/api/story.php?story=' + currentStory.id);
+
+        currentJSON.success(function (data) {
+            $(bulb).removeClass('loading').addClass('ready');
+            console.log('    ' + data.story.title);
+
+            //fimfic.story_info.put(currentStory.id, data.story);
+            fimfic.story_info.add(data.story.id, data.story);
+            //$.indexedDB('fimfic_offline').objectStore('story_info').put(756, 'data.story');
+
+
+            //fimfic.transaction = db.transaction(['meta', 'story_info', 'story_html'])
+
+            //fimfic.meta       = fimfic.transaction.objectStore('meta');
+            //fimfic.story_info = fimfic.transaction.objectStore('story_info');
+            //fimfic.story_html = fimfic.transaction.objectStore('story_html');
+
+            if (fimfic.listedStories.length > 0) {
+                //fimfic.recurseListedStories(function () {
+                //    callback.call();
+                //});
+                callback.call(); // for now, only do one story, no recursion
+            } else {
+                callback.call();
+            }
+        });
+
+        currentJSON.error(function () {
+            console.log('    Failed')
+            if (fimfic.listedStories.length > 0) {
+                fimfic.recurseListedStories(function () {
+                    callback.call();
+                });
+            } else {
+                callback.call();
+            }
+        });
+
+
+
+
+
+        /*fimfic.db = $.indexedDB("fimfic_offline", {
+            "version": 84,
+            "upgrade": function(transaction) {
+                // initialise database, if not already done so
+                console.log('Database Initialising')
+                transaction.createObjectStore("meta"); // stores app metadata, list of cached stories and such
+
+                transaction.createObjectStore("story_info"); // stores story info, metadata and such (think fimfiction API)
+                transaction.createObjectStore("story_html"); // stores the actual story html
+                //transaction.createObjectStore("story_image"); // stores the story images
+            }
+        });*/
+    },
+
+
     // set isLoggedIn variable, given html
     //
     // we do this every request, as isLoggedIn is
@@ -161,46 +231,59 @@ var fimfic = {
         } else {
             fimfic.isLoggedIn = true;
         }
+    },
+
+    // story_info class, for nice calling and json conversion junk below
+    story_info: {
+        add: function (id, info) {
+            console.log('adding info: id ' + id);
+            console.log(info);
+            $.indexedDB('fimfic_offline').objectStore('story_info').put($.toJSON(info), id);
+            // dunno why, but Chrome seems to barf if indexeddb holds actual data, rather than
+            //  a plain old string... Implicitly convert stuff to strings, herpa
+        }
     }
 }
 
 
 $(document).ready(function () {
-    // Initialise database, if not done so already
-    fimfic.initDatabase();
+    // Initialise database
+    fimfic.initDatabase(function () {
+        fimfic.updateStories(function (code) {
+            fimfic.showListedStories();
 
-    fimfic.updateStories(function (code) {
-        fimfic.showListedStories();
+            // Check DB up here somewhere, for if no network access
+            //  assume we fall through to below if we have network access,
+            //  or this is a new database with no info in it
 
-        // Check DB up here somewhere, for if no network access
-        //  assume we fall through to below if we have network access,
-        //  or this is a new database with no info in it
+            // Check 'net connection
+            if (fimfic.isLoggedIn) {
+                if (fimfic.listStoriesStatus == 'success') {
+                    $('#status span').fadeOut(400, function () {
+                        $('#status span').text("Read Later list obtained").fadeIn();
+                    });
 
-        // Check 'net connection
-        if (fimfic.isLoggedIn) {
-            if (fimfic.listStoriesStatus == 'success') {
+                    $('#status').delay(4000).fadeOut(400);
+
+                    fimfic.recurseListedStories(function () {
+                        console.log('Finished!');
+                    });
+
+                } else {
+                    $('#status span').fadeOut(400, function () {
+                        $('#status span').text("Failed to access Read Later list").fadeIn();
+                    });
+                }
+            } else if (fimfic.isOnline) {
                 $('#status span').fadeOut(400, function () {
-                    $('#status span').text("Read Later list obtained").fadeIn();
+                    $('#status span').text("You need to login to fimfiction to use this site").fadeIn();
                 });
-
-                $('#status').delay(4000).fadeOut(400);
-
-
-
             } else {
                 $('#status span').fadeOut(400, function () {
-                    $('#status span').text("Failed to access Read Later list").fadeIn();
+                    $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
                 });
             }
-        } else if (fimfic.isOnline) {
-            $('#status span').fadeOut(400, function () {
-                $('#status span').text("You need to login to fimfiction to use this site").fadeIn();
-            });
-        } else {
-            $('#status span').fadeOut(400, function () {
-                $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
-            });
-        }
 
+        });
     });
 });
