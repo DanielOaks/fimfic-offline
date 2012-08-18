@@ -57,11 +57,11 @@ var fimfic = {
 	},
 
 	// update list of stories
-	updateStories: function () {
+	updateStories: function (callback) {
 		console.log("Returning stories in user's Read Later list");
 
 		fimfic.listStories(function () {
-			// do stuff in here, etc
+			callback.call();
 		});
 	},
 
@@ -147,10 +147,10 @@ var fimfic = {
 
 
 $(document).ready(function() {
-	fimfic.initConnection(function() {
+	// Initialise database, if not done so already
+	fimfic.initDatabase();
 
-		// Initialise database, if not done so already
-		fimfic.initDatabase();
+	fimfic.updateStories(function() {
 
 		// Check 'net connection
 		if (fimfic.isLoggedIn) {
@@ -161,8 +161,6 @@ $(document).ready(function() {
 			$('#status').text("You need internet access to download stories (or cross-site ajax error)");
 			// or, you know, the cross-site xmlhttprequest hasn't been setup yet
 		}
-
-		fimfic.updateStories();
 
 	});
 });
