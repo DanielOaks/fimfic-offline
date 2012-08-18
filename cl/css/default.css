@@ -112,3 +112,69 @@ h1 {
 	50%  { background: #442; box-shadow: 0px 0px 5px  #442; }
 	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
 }
+
+
+
+
+
+#current_story {
+	padding: 10pt;
+	background-color: #dfd9c9;
+	color: #38362f;
+	border-radius: 8px;
+	margin-bottom: 10pt;
+	font-size: 85%;
+	box-shadow: 0px 1px 2px #38363f;
+}
+#current_story .head h2 {
+	display: inline-block;
+	font-size: 120%;
+	margin-bottom: 6pt;
+	color: #38352f;
+	font-weight: bold;
+}
+#current_story .body {
+	margin: 3pt -8.5pt -8pt -8.5pt;
+	padding: 8pt;
+	background-color: #fff;
+	border-radius: 0 0 5pt 5pt;
+}
+
+#current_story .body h2 {
+	display: none;
+}
+#current_story .body a {
+	display: none;
+}
+#current_story .body p a {
+	display: inline;
+}
+#current_story .body h1 {
+	margin: -1.5em;
+	height: 0;
+	display: block;
+	visibility: hidden;
+	font-size: 1em;
+}
+#current_story .body h3 {
+	font-weight: bold;
+	font-size: 120%;
+	margin-bottom: 6pt;
+	margin-top: 2em;
+}
+
+/* following lifted right from FimFic's current stuff */
+#current_story .body {
+	line-height: 1.9em;
+	font-family: Georgia;
+	color: #444;
+	padding: 20px;
+	text-align: justify;
+	word-wrap: break-word;
+}
+#current_story .body p.indented {
+	text-indent: 3em;
+}
+#current_story .body p.double {
+	margin-top: 1.5em;
+}

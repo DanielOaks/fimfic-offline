@@ -329,6 +329,58 @@ var fimfic = {
 
 
 $(document).ready(function () {
+
+    // setup story click handlers
+    $(document).on('click', '#stories .story', function(event) {
+        if ($(this).find('.statbulb').hasClass('ready')) {
+            var story_id = parseInt($(this).attr('fim_id'));
+
+            $('#stories').slideUp(400, function () {
+                var current_story = $('<div id="current_story"></div>').hide();
+                $('#content').append(current_story);
+                $('#current_story').append($('<div class="head"></div>'));
+                $('#current_story').append($('<div class="body"></div>'));
+
+                fimfic.story_info.get(story_id, false, function (value) {
+
+                    $('#current_story .head').append($('<h2></h2>').text(value.title));
+                    $('#current_story .head').append($('<span>&nbsp;&nbsp;by </span>'));
+                    $('#current_story .head').append($('<span class="author"></span>').text(value.author.name));
+
+                    fimfic.story_html.get(story_id, true, function (html) {
+                        $('#current_story .body').append($(html));
+
+                        var toDelete = [];
+                        var continueAddingItems = true;
+                        $.each($('#current_story .body').children(), function (index, value) {
+                            if (continueAddingItems) {
+                                if (!($(value).is('h1') || $(value).is('h3'))) {
+                                    toDelete.push(index);
+                                    console.log('delete item at index '+index);
+                                }
+                                if ($(value).is('h3')) {
+                                    continueAddingItems = false;
+
+                                    var offset = 0;
+                                    console.log('todelete: ', toDelete);
+                                    $.each(toDelete, function (index, value) {
+                                        $($('#current_story .body').children()[value-offset]).remove();
+
+                                        if (index == (toDelete.length-1)) {
+                                            $('#current_story').slideDown();
+                                        } else {
+                                            offset += 1;
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    });
+                });
+            });
+        }
+    });
+
     // Initialise database
     fimfic.initDatabase(function () {
         fimfic.updateStories(function (code) {
