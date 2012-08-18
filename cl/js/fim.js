@@ -221,7 +221,6 @@ var fimfic = {
             fimfic.recurseListedStories(function () {
                 callback.call();
             });
-            //callback.call(); // for now, only do one story, no recursion
         } else {
             callback.call();
             // should put delays on there to keep from hammering FimFic's servers as much?
@@ -383,7 +382,7 @@ $(document).ready(function () {
 
                     fimfic.story_html.get(story_id, true, function (html) {
                         $('#current_story .body').append($(html));
-                        $('body').append($('<div id="story-controls"><a class="change change-color" href="http://danneh.net">f</a><a class="change change-font" href="http://danneh.net">s</a></div>'));
+                        $('body').append($('<div id="story-controls"><a class="change change-color" href="http://danneh.net">f</a><a class="change change-font" href="http://danneh.net">s</a><a class="change change-smaller" href="http://danneh.net">-</a><a class="change change-larger" href="http://danneh.net">+</a></div>'));
                         $('#fim-bar').hide().slideDown();
 
                         var toDelete = [];
@@ -437,7 +436,7 @@ $(document).ready(function () {
                         $('#status span').fadeOut(400, function () {
                             $('#status span').text("Finished!").fadeIn();
                         });
-                        $('#status').delay(4000).fadeOut(400);
+                        $('#status').delay(2000).fadeOut(400);
                     });
 
                 } else {

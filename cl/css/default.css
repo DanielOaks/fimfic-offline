@@ -241,6 +241,9 @@ h1 {
 	background: #ccc;
 	color: #222 !important;
 }
+.light #story-controls .change-color:hover {
+	background: #555 !important;
+}
 .dark #story-controls .change-color:hover {
 	background: #aaa !important;
 }
