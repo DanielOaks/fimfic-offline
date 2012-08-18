@@ -41,6 +41,9 @@ h1 {
 	font-size: 85%;
 	box-shadow: 0px 1px 2px #38363f;
 }
+.story .head {
+	margin-right: 20px;
+}
 .story .head h2 {
 	display: inline-block;
 	font-size: 120%;
@@ -53,4 +56,39 @@ h1 {
 	padding: 8pt;
 	background-color: #fff;
 	border-radius: 0 0 5pt 5pt;
+}
+
+.story .head .statback {
+	position: relative;
+	top: 0;
+	right: -20px;
+	width: 16px;
+	height: 16px;
+	border-radius: 8px;
+	background: #555;
+	float: right;
+	box-shadow: 0px 0px 3px #999;
+}
+.story .head .statbulb {
+	position: relative;
+	top: 2px;
+	right: 2px;
+	width: 12px;
+	height: 12px;
+	border-radius: 6px;
+	float: right;
+}
+.story .head .statbulb.notready {
+	background: #b22;
+}
+.story .head .statbulb.loading {
+	-webkit-animation: bulb_blink 2s infinite;
+}
+.story .head .statbulb.ready {
+	background: #2b2;
+}
+@-webkit-keyframes bulb_blink {
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
 }
