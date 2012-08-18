@@ -169,7 +169,7 @@ $(document).ready(function () {
 		} else if (fimfic.isOnline) {
 			$('#status').text("You need to login to fimfiction to use this site");
 		} else {
-			$('#status').text("You need internet access to download stories (or cross-site ajax error)");
+			$('#status').text("You need internet access to download stories (or cross-origin ajax error)");
 			// or, you know, the cross-site xmlhttprequest hasn't been setup yet
 		}
 
