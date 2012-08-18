@@ -235,10 +235,18 @@ var fimfic = {
 
     // story_info class, for nice calling and json conversion junk below
     story_info: {
-        add: function (id, info) {
+        add: function (id, info, isString) {
+            isString = (typeof isString === "undefined") ? false : isString;
+
             console.log('adding info: id ' + id);
             console.log(info);
-            $.indexedDB('fimfic_offline').objectStore('story_info').put($.toJSON(info), id);
+
+            if (!isString) {
+                // convert to a string
+                info = $.toJSON(info)
+            }
+            
+            $.indexedDB('fimfic_offline').objectStore('story_info').put(info, id);
             // dunno why, but Chrome seems to barf if indexeddb holds actual data, rather than
             //  a plain old string... Implicitly convert stuff to strings, herpa
         }
