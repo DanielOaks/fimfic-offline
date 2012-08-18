@@ -135,36 +135,13 @@ var fimfic = {
 	//  making requests... Nicer to keep everything
 	//  totally dynamic, I think.
 	checkLoggedIn: function (parsedhtml) {
-		// see whether logged in
-		fimfic.isLoggedIn = true;
-
-		// find nav_bar
-		$.each(parsedhtml, function() {
-		if (this.className == 'nav_bar') {
-
-			// find light
-			$.each(this, function() {
-			if (this.className == 'light') {
-
-				// find right
-				$.each(this, function() {
-				if (this.className == 'right') {
-
-					// find login area
-					$.each(this, function() {
-						$.each(this, function() {
-							if (this.id == 'login_area') {
-								// login_area div only shown
-								//  when user has yet to login
-								fimfic.isLoggedIn = false;
-								return;
-							}
-						})
-
-					})
-				}})
-			}})
-		}});
+		// login_area div only shown
+		//  when user has yet to login
+		if ($(parsedhtml).find('#login_area').length > 0) {
+			fimfic.isLoggedIn = false;
+		} else {
+			fimfic.isLoggedIn = true;
+		}
 	}
 }
 
