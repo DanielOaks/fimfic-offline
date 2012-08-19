@@ -430,6 +430,11 @@ var fimfic = {
 
 $(document).ready(function () {
 
+    // header
+    $(document).on('click', '.header', function (event) {
+        window.location = 'http://fimfiction.net';
+    });
+
     // footer
     $(document).on('click', '#footer .head', function (event) {
         $('#footer .body').slideToggle();

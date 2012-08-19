@@ -36,6 +36,7 @@ body {
 	height: 120px;
 	border-bottom: 2px solid #3e3424;
 	background: url('../img/header-bg.png') #639888;
+	cursor: pointer;
 }
 .header h1 {
 	display: block;

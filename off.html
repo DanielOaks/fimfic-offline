@@ -21,7 +21,7 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <link rel="apple-touch-icon-precomposed" href="cl/img/iphone_icon.png"/>
     </head><link rel="stylesheet" type="text/css" href="data:text/css,">
-    <body class="serif light">
+    <body>
         <div class="header"><h1>FimFic Offline</h1></div>
 
         <div id="wrapper">
@@ -47,6 +47,11 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
+
+    $(document).on('click', '.header', function (event) {
+        console.log('going to fimfic');
+        window.location = 'http://fimfiction.net';
+    });
 
     $(document).on('click', '#footer .head', function (event) {
         $('#footer .body').slideToggle();
