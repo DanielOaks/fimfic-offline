@@ -110,8 +110,6 @@ var fimfic = {
                 });
             });
 
-            fimfic.listedStories = fimfic.listedStories.slice(0, 3); // TEST CODE, to minimise the impact on FimFic
-
             fimfic.listStoriesStatus = 'success';
             callback.call();
         });
@@ -143,7 +141,7 @@ var fimfic = {
 
                 storyheader.append($('<h2></h2>').text(this.title));
                 storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
-                storyheader.append($('<span class="author"></span>').text(this.author));
+                storyheader.append($('<span class="author"></span>').text(this.author.name));
 
 
                 storybody = $('<div class="body"></div>');
@@ -167,6 +165,7 @@ var fimfic = {
 
             if (values_len < 1) {
                 fimfic.isCached = false;
+                callback.call();
             } else {
                 // we have stories cached
                 fimfic.isCached = true;
@@ -215,7 +214,38 @@ var fimfic = {
         var bulb = $('#stories .story[fim_id="'+currentStory.id+'"] .statbulb');
         $(bulb).removeClass('notready').removeClass('stored').addClass('loading');
 
-        var currentJSON = $.getJSON('http://www.fimfiction.net/api/story.php?story=' + currentStory.id);
+        fimfic.download_info(currentStory.id, function (data, getHtml) {
+            if (getHtml) {
+
+                fimfic.download_html(data.story.id, bulb, function () {
+                    fimfic.recurseListedStoriesFinish(bulb, callback);
+                });
+
+            } else {
+                // do after we finish /all/ other work
+                $(bulb).removeClass('loading').addClass('ready');
+
+                fimfic.recurseListedStoriesFinish(bulb, callback);
+            }
+        });
+    },
+
+    // need this because of the async html-grabbing method
+    recurseListedStoriesFinish: function (bulb, callback) {
+        if (fimfic.listedStories.length > 0) {
+            fimfic.recurseListedStories(function () {
+                callback.call();
+            });
+        } else {
+            callback.call();
+            // should put delays on there to keep from hammering FimFic's servers as much?
+            //  talk to FimFic's server admin to discuss this and other methods
+        }
+    },
+
+    // downloads new story info
+    download_info: function (id, callback) {
+        var currentJSON = $.getJSON('http://www.fimfiction.net/api/story.php?story=' + id);
 
         currentJSON.success(function (data) {
             // pop old id off story_info and compare to new info
@@ -229,58 +259,41 @@ var fimfic = {
 
                 // if story has new chapters, has updated, etc
                 fimfic.should_get_html(value, data.story, function (getHtml) {
-                    if (getHtml) {
-                        // download new html, etc
-                        var request = $.ajax({
-                            url: 'http://www.fimfiction.net/download_story.php?story='+data.story.id+'&html'
-                        });
-
-                        request.done(function (html) {
-                            html = html.split('</head>')[1]; // so it's easier to integrate later
-                            fimfic.story_html.add(data.story.id, html);
-
-                            fimfic.recurseListedStoriesFinish(bulb, callback);
-                        });
-
-                        request.fail(function (jqXHR, textStatus) {
-                            console.log('html retrieval failed, ', data.story.id, jqXHR, textStatus);
-
-                            fimfic.recurseListedStoriesFinish(bulb, callback);
-                        });
-
-                    } else {
-                        fimfic.recurseListedStoriesFinish(bulb, callback);
-                    }
+                    callback.call(this, data, getHtml);
                 });
             });
         });
 
         currentJSON.error(function () {
             console.log('    Failed')
-            if (fimfic.listedStories.length > 0) {
-                fimfic.recurseListedStories(function () {
-                    callback.call();
-                });
-            } else {
-                callback.call();
-            }
+            callback.call(this, [], false);
         });
     },
 
-    // need this because of the async html-grabbing method
-    recurseListedStoriesFinish: function (bulb, callback) {
-        // do after we finish /all/ other work
-        $(bulb).removeClass('loading').addClass('ready');
+    // downloads new story html
+    download_html: function (id, bulb, callback) {
+        var request = $.ajax({
+            url: 'http://www.fimfiction.net/download_story.php?story='+id+'&html'
+        });
 
-        if (fimfic.listedStories.length > 0) {
-            fimfic.recurseListedStories(function () {
-                callback.call();
-            });
-        } else {
+        request.done(function (html) {
+            html = html.split('</head>')[1]; // so it's easier to integrate later
+            fimfic.story_html.add(id, html);
+
+            // do after we finish /all/ other work
+            $(bulb).removeClass('loading').addClass('ready');
+
             callback.call();
-            // should put delays on there to keep from hammering FimFic's servers as much?
-            //  talk to FimFic's server admin to discuss this and other methods
-        }
+        });
+
+        request.fail(function (jqXHR, textStatus) {
+            console.log('html retrieval failed, ', jqXHR, textStatus, id, bulb, callback);
+
+            // do after we finish /all/ other work
+            $(bulb).removeClass('loading').addClass('notready');
+
+            callback.call();
+        });
     },
 
     // checks to see whether we should get new story html
@@ -567,6 +580,15 @@ $(document).ready(function () {
                     });
                 });
             });
+        } else if ($(this).find('.statbulb').hasClass('notready')) {
+            // download this story to our cache
+            var bulb = $(this).find('.statbulb');
+            $(bulb).removeClass('notready').addClass('loading');
+            fimfic.download_info($(this).attr('fim_id'), function (data, getHtml) {
+                fimfic.download_html(data.story.id, bulb, function () {
+                    // do nothing
+                });
+            });
         }
     });
 
@@ -587,13 +609,12 @@ $(document).ready(function () {
                         $('#status span').fadeOut(400, function () {
                             $('#status span').text("Checking whether anything's updated").fadeIn();
                         });
+                        // actually check for updates and stuff, you know
 
-                        fimfic.recurseListedStories(function () {
-                            $('#status span').fadeOut(400, function () {
-                                $('#status span').text("Finished!").fadeIn();
-                            });
-                            $('#status').delay(2000).fadeOut(400);
+                        $('#status span').fadeOut(400, function () {
+                            $('#status span').text("Finished!").fadeIn();
                         });
+                        $('#status').delay(2000).fadeOut(400);
 
                     } else {
                         $('#status span').fadeOut(400, function () {

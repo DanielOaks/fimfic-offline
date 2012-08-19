@@ -16,7 +16,7 @@ body {
 }
 #status {
 	position: fixed;
-	right: 10pt;
+	right: 0;
 	bottom: 0;
 
 	width: 100%;
@@ -27,9 +27,17 @@ body {
 	color: #eee;
 }
 
-h1 {
+/*h1 {
 	font-size: 2em;
 	margin-bottom: 8pt;
+}*/
+h1.header {
+	display: block;
+	width: 100%;
+	height: 120px;
+	font-size: 0;
+	background: url('../img/header.jpg');
+	border-bottom: 2px solid #3e3424;
 }
 
 .story {
