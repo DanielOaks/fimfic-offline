@@ -17,4 +17,6 @@ I could hardly do all this just by myself. Standing on the shoulders of some oth
 [jquery](http://jquery.com/) - jQuery. Simply the best javascript library in existence  
 [jquery-json](http://code.google.com/p/jquery-json/) - jQuery plugin to add $.toJSON()  
 [jquery-indexddb](https://github.com/axemclion/jquery-indexeddb) - Provides a simply jQuery-onic interface for IndexedDB  
-[IndexedDBShim](https://github.com/axemclion/IndexedDBShim) - Provides an IndexedDB runtime using WebSQL, for those other browsers    
+[IndexedDBShim](https://github.com/axemclion/IndexedDBShim) - Provides an IndexedDB runtime using WebSQL, for those other browsers  
+
+[Fontello](http://fontello.com/) - Provides a pretty awesome interface for using some great icons      
