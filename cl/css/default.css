@@ -220,12 +220,15 @@ h1 {
 
 #story-controls .change {
 	display: inline-block !important;
-	padding: 8pt 15pt;
+	padding: 8pt 11pt 8pt 15pt;
 	text-decoration: none;
 	color: #fff;
 }
 #story-controls .change:hover {
-	background: #555;
+	background: #444;
+}
+#story-controls .change:active {
+	background: #2d2d2d;
 }
 #story-controls .change:first-child {
 	border-radius: 5pt 0 0 0;
