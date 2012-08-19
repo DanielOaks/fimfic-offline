@@ -9,8 +9,8 @@ Currently, this does not function in most browsers due to the same-origin policy
 
 To see what would look like if the CORS stuff was setup, [here's the example page](http://fim.danneh.net/off)
 
-Libraries
----------
+Other Resources
+---------------
 
 I could hardly do all this just by myself. Standing on the shoulders of some other awesome projects, here's a list of the libraries/resources I've used
 
