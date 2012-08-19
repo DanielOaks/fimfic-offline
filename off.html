@@ -42,7 +42,7 @@
         </div>
         <div id="status" style="display: none; ">&nbsp;<span style="display: inline; ">Finished!</span>&nbsp;</div>
 
-    <div class="story-controls control" style="display: none; "><a class="change change-color" href="http://danneh.net/"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net/"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net/"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net/"><i class="icon-plus"></i></a></div>
+    <div class="story-controls control" style="display: none; "><a class="change back-from-story" href="http://danneh.net/"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net/"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net/"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net/"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net/"><i class="icon-plus"></i></a></div>
 </body>
 <script type="text/javascript">
 
@@ -53,6 +53,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '#footer .head', function (event) {
+        event.preventDefault(); // stop href from messing up things
         $('#footer .body').slideToggle();
     });
 
@@ -66,9 +67,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('click', '#current_story .head', function (event) {
-        event.preventDefault(); // stop href from messing up things
-
+    function backfromstory () {
         $('#footer').fadeOut(200);
         $('.story-controls').slideUp(200, function () {
             $('#current_story').fadeOut(200, function () {
@@ -76,6 +75,15 @@ $(document).ready(function () {
                 $('#stories').fadeIn();
             });
         });
+    }
+
+    $(document).on('click', '.back-from-story', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        backfromstory();
+    });
+    $(document).on('click', '#current_story .head', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        backfromstory();
     });
 
 

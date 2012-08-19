@@ -441,9 +441,8 @@ $(document).ready(function () {
     });
 
     // fim bar
-    $(document).on('click', '#current_story .head', function(event) {
-        event.preventDefault(); // stop href from messing up things
 
+    function backfromstory () {
         $('#footer').fadeOut(200);
         $('.story-controls').slideUp(200, function () {
             $('.story-controls').remove();
@@ -453,7 +452,15 @@ $(document).ready(function () {
                 $('#footer').fadeIn();
             });
         });
+    }
 
+    $(document).on('click', '.back-from-story', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        backfromstory();
+    });
+    $(document).on('click', '#current_story .head', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        backfromstory();
     });
 
     // Now, to make it save the below selections in the 'meta' table thingy!
@@ -539,7 +546,7 @@ $(document).ready(function () {
 
                     fimfic.story_html.get(story_id, function (html) {
                         $('#current_story .body').append($(html));
-                        $('body').append($('<div class="story-controls control"><a class="change change-color" href="http://danneh.net"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net"><i class="icon-plus"></i></a></div>'));
+                        $('body').append($('<div class="story-controls control" style="display: none; "><a class="change back-from-story" href="http://danneh.net/"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net/"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net/"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net/"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net/"><i class="icon-plus"></i></a></div>'));
                         $('.story-controls').hide();
 
                         var toDelete = [];
