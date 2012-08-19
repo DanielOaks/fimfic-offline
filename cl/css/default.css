@@ -334,10 +334,10 @@ body {
 	margin-bottom: 10pt;
 	font-size: 85%;
 	box-shadow: 0px 1px 2px #38363f;
-	cursor: pointer;
 }
 #footer .head {
 	padding: 11pt 0 10pt;
+	cursor: pointer;
 }
 #footer .body {
 	margin: 0 -8.5pt 0.5pt -8.5pt;
