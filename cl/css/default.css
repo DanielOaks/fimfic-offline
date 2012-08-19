@@ -1,5 +1,22 @@
+
+.dark .body a {
+	color: #55f
+}
+/*.light #current_story .body {
+	background: #fff;
+	color: #000;
+}
+.dark #current_story .body {
+	background: #2b2b2b;
+	color: #eee;
+}
+.dark #current_story .body a {
+	color: #55f
+}*/
+body.dark {
+	background-image: url('../img/content_background_dark.png');
+}
 body {
-	background-color: #eee8d8; /* yep, direct lift from fimfiction, I'm a terrible person etc */
 	background-image: url('../img/content_background.png');
 
 	font-family: sans-serif;
@@ -31,12 +48,19 @@ body {
 	font-size: 2em;
 	margin-bottom: 8pt;
 }*/
+.dark .header{
+	background: url('../img/header_bg_dark.png') #033828;
+	border-bottom: 2px solid #1e1404;
+}
 .header {
 	width: 100%;
 	height: 120px;
 	border-bottom: 2px solid #3e3424;
-	background: url('../img/header-bg.png') #639888;
+	background: url('../img/header_bg.png') #639888;
 	cursor: pointer;
+}
+.dark .header h1 {
+	background: url('../img/header_dark.png') no-repeat left;
 }
 .header h1 {
 	display: block;
@@ -46,6 +70,10 @@ body {
 	background: url('../img/header.png') no-repeat left;
 }
 
+.dark .story {
+	background-color: #8c8369;
+	color: #eee;
+}
 .story {
 	padding: 10pt;
 	background-color: #dfd9c9;
@@ -59,12 +87,20 @@ body {
 .story .head {
 	margin-right: 20px;
 }
+.dark .story .head h2 {
+	color: #ccc;
+}
 .story .head h2 {
 	display: inline-block;
 	font-size: 120%;
 	margin-bottom: 6pt;
 	color: #38352f;
 	font-weight: bold;
+}
+
+.dark .story .body {
+	background: #2b2b2b;
+	color: #eee;
 }
 .story .body {
 	margin: 3pt -8.5pt -8pt -8.5pt;
@@ -138,6 +174,10 @@ body {
 
 
 
+.dark #current_story{
+	background-color: #8c8369;
+	color: #eee;
+}
 
 #current_story {
 	padding: 10pt;
@@ -152,12 +192,21 @@ body {
 	margin-right: 30px;
 	cursor: pointer;
 }
+.dark #current_story .head h2 {
+	color: #ddd;
+}
 #current_story .head h2 {
 	display: inline-block;
 	font-size: 120%;
 	margin-bottom: 6pt;
 	color: #38352f;
 	font-weight: bold;
+}
+.dark #current_story .back-from-story {
+    background: #5f5949;
+}
+.dark #current_story .head:hover .back-from-story {
+    background: #4f4939;
 }
 #current_story .back-from-story {
 	display: block;
@@ -233,9 +282,6 @@ body {
 .dark #current_story .body {
 	background: #2b2b2b;
 	color: #eee;
-}
-.dark #current_story .body a {
-	color: #55f
 }
 
 .serif #current_story .body {
@@ -325,6 +371,10 @@ body {
 }
 
 
+.dark #footer {
+	background-color: #8c8369;
+	color: #ddd;
+}
 #footer {
 	padding: 0 10pt 1pt 10pt;
 	background-color: #dfd9c9;
@@ -338,6 +388,11 @@ body {
 #footer .head {
 	padding: 11pt 0 10pt;
 	cursor: pointer;
+}
+
+.dark #footer .body {
+	background: #2b2b2b;
+	color: #eee;
 }
 #footer .body {
 	margin: 0 -8.5pt 0.5pt -8.5pt;
