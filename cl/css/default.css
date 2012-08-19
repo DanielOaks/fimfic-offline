@@ -31,13 +31,18 @@ body {
 	font-size: 2em;
 	margin-bottom: 8pt;
 }*/
-h1.header {
-	display: block;
+.header {
 	width: 100%;
 	height: 120px;
-	font-size: 0;
-	background: url('../img/header.jpg') no-repeat left #639888;
 	border-bottom: 2px solid #3e3424;
+	background: url('../img/header-bg.png') #639888;
+}
+.header h1 {
+	display: block;
+	width: 100%;
+	height: 100%;
+	font-size: 0;
+	background: url('../img/header.png') no-repeat left;
 }
 
 .story {
@@ -88,42 +93,44 @@ h1.header {
 	float: right;
 }
 .story .head .statbulb.notready {
-	background: #b22;
-	box-shadow: 0px 0px 10px #b22, inset 0px 0px 7px -4px black;
+	background: #c82222;
+	box-shadow: inset 0px 0px 7px -4px black;
 }
 .story .head .statbulb.loading {
 	-webkit-animation: bulb_blink 2s infinite;
 	-moz-animation: bulb_blink 2s infinite;
 	-ms-animation: bulb_blink 2s infinite;
 	-o-animation: bulb_blink 2s infinite;
+
+	box-shadow: inset 0px 0px 7px -4px black;
 }
 .story .head .statbulb.ready {
 	background: #2b2;
-	box-shadow: 0px 0px 10px #2b2, inset 0px 0px 7px -4px black;
+	box-shadow: inset 0px 0px 7px -4px black;
 }
 .story .head .statbulb.stored {
 	background: #66b;
-	box-shadow: 0px 0px 10px #66d, inset 0px 0px 7px -4px black;
+	box-shadow: inset 0px 0px 7px -4px black;
 }
 @-webkit-keyframes bulb_blink {
-	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
-	50%  { background: #442; box-shadow: 0px 0px 5px  #442, inset 0px 0px 7px -4px black; }
-	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
 }
 @-moz-keyframes bulb_blink {
-	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
-	50%  { background: #442; box-shadow: 0px 0px 5px  #442, inset 0px 0px 7px -4px black; }
-	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
 }
 @-ms-keyframes bulb_blink {
-	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
-	50%  { background: #442; box-shadow: 0px 0px 5px  #442, inset 0px 0px 7px -4px black; }
-	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
 }
 @-o-keyframes bulb_blink {
-	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
-	50%  { background: #442; box-shadow: 0px 0px 5px  #442, inset 0px 0px 7px -4px black; }
-	100% { background: #bb2; box-shadow: 0px 0px 10px #bb2, inset 0px 0px 7px -4px black; }
+	0%   { background: #bb2; }
+	50%  { background: #442; }
+	100% { background: #bb2; }
 }
 
 
@@ -199,7 +206,7 @@ h1.header {
 	color: #000;
 }
 .dark #current_story .body {
-	background: #222;
+	background: #2b2b2b;
 	color: #eee;
 }
 .dark #current_story .body a {
