@@ -70,7 +70,7 @@ body {
 	margin: 3pt -8.5pt -8pt -8.5pt;
 	padding: 8pt;
 	background-color: #fff;
-	border-radius: 0 0 5pt 5pt;
+	border-radius: 2pt 2pt 5pt 5pt;
 	line-height: 1.4;
 }
 
@@ -159,7 +159,7 @@ body {
 	margin: 3pt -8.5pt -8pt -8.5pt;
 	padding: 8pt;
 	background-color: #fff;
-	border-radius: 0 0 5pt 5pt;
+	border-radius: 2pt 2pt 5pt 5pt;
 }
 
 #current_story .body h2 {
@@ -339,7 +339,7 @@ body {
 	margin: 0 -8.5pt 0.5pt -8.5pt;
 	padding: 8pt;
 	background-color: #fff;
-	border-radius: 0 0 5pt 5pt;
+	border-radius: 2pt 2pt 5pt 5pt;
 	line-height: 1.4;
 }
 #footer a {
