@@ -37,7 +37,6 @@
                     <p>FimFic Offline Reader is an open source project, avaliable <a href="https://github.com/Danneh/fimfic-offline">here</a>, and hosted with Github Pages.</p>
                     <p>Header image, about half the CSS, the look, the inspiration, and stories from <a href="http://fimfiction.net">FimFiction</a>.</p>
                     <p>Using <a href="http://jquery.com/">jQuery</a>, <a href="http://code.google.com/p/jquery-json/">jQuery-Json</a>, <a href="https://github.com/axemclion/jquery-indexeddb">jQuery-IndexedDB</a>, <a href="https://github.com/axemclion/IndexedDBShim">IndexedDB Shim</a>, and <a href="http://fontello.com/">Fontello</a>.</p>
-
                 </div>
             </div>
         </div>
@@ -54,8 +53,10 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '#stories .story', function (event) {
+        $('#footer').fadeOut(200);
         $('#stories').fadeOut(200, function () {
             $('#current_story').fadeIn(200, function () {
+                $('#footer').fadeIn();
                 $('#story-controls').slideDown(200);
             });
         });
@@ -64,8 +65,10 @@ $(document).ready(function () {
     $(document).on('click', '#story-controls .back-from-story', function (event) {
         event.preventDefault(); // stop href from messing up things
 
+        $('#footer').fadeOut(200);
         $('#story-controls').slideUp(200, function () {
             $('#current_story').fadeOut(200, function () {
+                $('#footer').fadeIn();
                 $('#stories').fadeIn();
             });
         });
