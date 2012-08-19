@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg">
 <metadata>
-Created by FontForge 20100429 at Sun Aug 19 03:33:22 2012
+Created by FontForge 20100429 at Sun Aug 19 11:31:24 2012
  By root
 Copyright (C) 2012 by original authors @ fontello.com
 </metadata>
@@ -16,7 +16,7 @@ Copyright (C) 2012 by original authors @ fontello.com
     panose-1="2 0 6 3 0 0 0 0 0 0"
     ascent="800"
     descent="-200"
-    bbox="0 -127 911 766"
+    bbox="0 -200 911 800"
     underline-thickness="50"
     underline-position="-100"
     unicode-range="U+002B-E7A0"
@@ -33,6 +33,9 @@ d="M33 0v666h265v-666h-265zM66 33h199v600h-199v-600z" />
 d="M0 292v74q0 20 14 34t34 14h261v260q0 21 14 35.5t35 14.5h74q20 0 34 -14.5t14 -34.5v-261h261q20 0 34 -14t14 -34v-74q0 -20 -14 -34t-34 -14h-261v-260q0 -21 -14 -35.5t-34 -14.5h-74q-20 0 -34.5 14.5t-14.5 34.5v261h-260q-21 0 -35 13.5t-14 34.5z" />
     <glyph glyph-name="hyphen" unicode="-" 
 d="M0 292v74q0 20 14 34t34 14h693q20 0 34 -14t14 -34v-74q0 -20 -14 -34t-34 -14h-692q-21 0 -35 13.5t-14 34.5z" />
+    <glyph glyph-name="uni2139" unicode="&#x2139;" horiz-adv-x="490" 
+d="M367 800q48 0 74 -28t26 -70q0 -50 -39 -88t-95 -38q-47 0 -73.5 27t-25.5 73q0 45 36 84.5t97 39.5zM160 -200q-29 0 -45.5 13.5t-22.5 52.5t14 110l60 255q15 57 0 57q-13 0 -54.5 -18t-70.5 -38l-26 44q91 77 190 125t150 48q26 0 38.5 -20t11 -55.5t-14.5 -85.5
+l-69 -268q-16 -63 5 -63q15 0 49.5 16t69.5 44l30 -41q-84 -86 -175 -131t-140 -45z" />
     <glyph glyph-name="uni2600" unicode="&#x2600;" horiz-adv-x="928" 
 d="M464.5 543q92.5 0 158 -65.5t65.5 -158t-65.5 -158t-158 -65.5t-158 65.5t-65.5 158t65.5 158t158 65.5zM521 711q0 -24 -17 -40.5t-39.5 -16.5t-39 16.5t-16.5 40.5t16.5 39.5t38.5 15.5q24 0 40.5 -16t16.5 -39zM130 599q0 55 56 55q55 0 55 -55q0 -56 -55 -56
 q-56 0 -56 56zM74 376q23 0 39.5 -16t16.5 -40t-16 -40t-40 -16t-40 16.5t-16 39.5q0 24 16 40t40 16zM130 41q0 55 56 55q55 0 55 -55q0 -56 -55 -56q-56 0 -56 56zM409 -70q0 22 16.5 38.5t38.5 16.5q24 0 40.5 -16.5t16.5 -39t-17 -39.5t-39.5 -17t-39 16.5t-16.5 40.5z

@@ -70,6 +70,7 @@ body {
 	padding: 8pt;
 	background-color: #fff;
 	border-radius: 0 0 5pt 5pt;
+	line-height: 1.4;
 }
 
 .story .head .statback {
@@ -306,3 +307,47 @@ body {
 .mono #story-controls .change-font {
 	font-family: Georgia, serif;
 }*/
+
+#footer .head {
+	cursor: pointer;
+}
+#footer .head i {
+	display: block;
+	text-align: center;
+}
+#footer .body {
+	display: none;
+}
+
+
+#footer {
+	padding: 0 10pt 1pt 10pt;
+	background-color: #dfd9c9;
+	color: #38362f;
+	border-radius: 8px;
+	margin-top: 20pt;
+	margin-bottom: 10pt;
+	font-size: 85%;
+	box-shadow: 0px 1px 2px #38363f;
+	cursor: pointer;
+}
+#footer .head {
+	padding: 11pt 0 10pt;
+}
+#footer .body {
+	margin: 0 -8.5pt 0.5pt -8.5pt;
+	padding: 8pt;
+	background-color: #fff;
+	border-radius: 0 0 5pt 5pt;
+	line-height: 1.4;
+}
+#footer a {
+	text-decoration: none;
+	color: #55d;
+}
+#footer .body p {
+	margin-bottom: 5pt;
+}
+#footer .body p:last-child {
+	margin-bottom: 0;
+}

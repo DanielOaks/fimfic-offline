@@ -430,6 +430,11 @@ var fimfic = {
 
 $(document).ready(function () {
 
+    // footer
+    $(document).on('click', '#footer .head', function (event) {
+        $('#footer .body').slideToggle();
+    });
+
     // fim bar
     $(document).on('click', '#story-controls .back-from-story', function(event) {
         event.preventDefault(); // stop href from messing up things
