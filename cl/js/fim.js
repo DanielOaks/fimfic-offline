@@ -441,7 +441,7 @@ $(document).ready(function () {
     });
 
     // fim bar
-    $(document).on('click', '.story-controls .back-from-story', function(event) {
+    $(document).on('click', '#current_story .head', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         $('#footer').fadeOut(200);
@@ -526,6 +526,7 @@ $(document).ready(function () {
 
                 fimfic.story_info.get(story_id, function (value) {
 
+                    $('#current_story .head').append($('<div class="back-from-story"><i class="icon-left-open"></i>'));
                     $('#current_story .head').append($('<h2></h2>').text(value.title));
                     $('#current_story .head').append($('<span>&nbsp;&nbsp;by </span>'));
                     $('#current_story .head').append($('<span class="author"></span>').text(value.author.name));
@@ -538,7 +539,6 @@ $(document).ready(function () {
 
                     fimfic.story_html.get(story_id, function (html) {
                         $('#current_story .body').append($(html));
-                        $('body').append($('<div class="story-controls return"><a class="change back-from-story" href="http://danneh.net"><i class="icon-left-open"></i></a></div>'));
                         $('body').append($('<div class="story-controls control"><a class="change change-color" href="http://danneh.net"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net"><i class="icon-plus"></i></a></div>'));
                         $('.story-controls').hide();
 

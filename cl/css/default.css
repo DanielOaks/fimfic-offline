@@ -148,6 +148,10 @@ body {
 	font-size: 85%;
 	box-shadow: 0px 1px 2px #38363f;
 }
+#current_story .head {
+	margin-right: 30px;
+	cursor: pointer;
+}
 #current_story .head h2 {
 	display: inline-block;
 	font-size: 120%;
@@ -155,11 +159,30 @@ body {
 	color: #38352f;
 	font-weight: bold;
 }
+#current_story .back-from-story {
+	display: block;
+	position: relative;
+	top: -8pt;
+	right: -31pt;
+	float: right;
+	text-align: center;
+
+	border-radius: 5pt 5pt 0 0;
+
+    background: #bfb9a9;
+}
+#current_story .head:hover .back-from-story {
+    background: #afa999;
+}
+#current_story .back-from-story i {
+	display: block;
+	margin: 9pt 8pt 9pt 11pt;
+}
 #current_story .body {
 	margin: 3pt -8.5pt -8pt -8.5pt;
 	padding: 8pt;
 	background-color: #fff;
-	border-radius: 2pt 2pt 5pt 5pt;
+	border-radius: 2pt 0 5pt 5pt;
 }
 
 #current_story .body h2 {
@@ -245,20 +268,14 @@ body {
     background: linear-gradient(top, #333 0%,#2b2b2b 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#333', endColorstr='#2b2b2b',GradientType=0 ); /* IE6-9 */
 }
-.story-controls.return {
-	left: 10pt;
-}
 .story-controls.control {
-	right: 10pt;
+	right: 12pt;
 }
 
 .story-controls .change {
 	display: inline-block !important;
 	text-decoration: none;
 	color: #fff;
-}
-.story-controls.return .change {
-	padding: 8pt 11pt 8pt 13pt;
 }
 .story-controls.control .change {
 	padding: 8pt 11pt 8pt 15pt;
@@ -283,9 +300,6 @@ body {
     background: linear-gradient(top, #2d2d2d 0%,#242424 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2d2d2d', endColorstr='#242424',GradientType=0 ); /* IE6-9 */
 }
-.story-controls.return .change {
-	border-radius: 5pt 5pt 0 0;
-}
 .story-controls.control .change:first-child {
 	border-radius: 5pt 0 0 0;
 }
@@ -298,29 +312,6 @@ body {
 .dark .icon-bg:before {
 	content: '\2600'; /* show sun */
 }
-/*.light .story-controls .change-color {
-	background: #333;
-	color: #fff;
-}
-.dark .story-controls .change-color {
-	background: #ccc;
-	color: #222 !important;
-}
-.light .story-controls .change-color:hover {
-	background: #555 !important;
-}
-.dark .story-controls .change-color:hover {
-	background: #aaa !important;
-}
-/*.serif .story-controls .change-font {
-	font-family: Helvetica, sans-serif;
-}
-.sans .story-controls .change-font {
-	font-family: monospace;
-}
-.mono .story-controls .change-font {
-	font-family: Georgia, serif;
-}*/
 
 #footer .head {
 	cursor: pointer;
