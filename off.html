@@ -8,9 +8,9 @@
         <link rel="stylesheet" type="text/css" href="cl/css/default.css" />
         <link rel="stylesheet" type="text/css" href="cl/fonts/css/fim-offline-icons.css" />
 
-        <!-- Script
+        <!-- Script -->
         <script type="text/javascript" src="cl/js/jquery-1.7.2.min.js"></script>
-        <script type="text/javascript" src="cl/js/indexeddbshim.min.js"></script>
+        <!--<script type="text/javascript" src="cl/js/indexeddbshim.min.js"></script>
         <script type="text/javascript" src="cl/js/jquery.indexeddb.js"></script>
         <script type="text/javascript" src="cl/js/jquery.json-2.3.min.js"></script>
         <script type="text/javascript" src="cl/js/fim.js"></script>-->
@@ -23,7 +23,7 @@
     </head><link rel="stylesheet" type="text/css" href="data:text/css,">
     <body class="serif light">
         <h1 class="header">FimFic Offline</h1>
-        
+
         <div id="wrapper">
             <div id="content">
 
@@ -31,4 +31,14 @@
         </div>
         <div id="status" style="display: none; ">&nbsp;<span style="display: inline; ">Finished!</span>&nbsp;</div>
     
-</body></html>
+</body>
+<script type="text/javascript">
+
+$(document).ready(function () {
+
+    $(document).on('click', '#stories .story', function(event) {
+        window.location = 'story.html';
+    });
+});
+</script>
+</html>

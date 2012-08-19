@@ -431,9 +431,6 @@ var fimfic = {
 $(document).ready(function () {
 
     // fim bar
-    $('body').addClass('light');
-    $('body').addClass('serif');
-
     $(document).on('click', '#story-controls .back-from-story', function(event) {
         event.preventDefault(); // stop href from messing up things
 

@@ -8,9 +8,9 @@
         <link rel="stylesheet" type="text/css" href="cl/css/default.css" />
         <link rel="stylesheet" type="text/css" href="cl/fonts/css/fim-offline-icons.css" />
 
-        <!-- Script
+        <!-- Script -->
         <script type="text/javascript" src="cl/js/jquery-1.7.2.min.js"></script>
-        <script type="text/javascript" src="cl/js/indexeddbshim.min.js"></script>
+        <!--<script type="text/javascript" src="cl/js/indexeddbshim.min.js"></script>
         <script type="text/javascript" src="cl/js/jquery.indexeddb.js"></script>
         <script type="text/javascript" src="cl/js/jquery.json-2.3.min.js"></script>
         <script type="text/javascript" src="cl/js/fim.js"></script>-->
@@ -23,7 +23,7 @@
     </head><link rel="stylesheet" type="text/css" href="data:text/css,">
     <body class="serif light">
         <h1 class="header">FimFic Offline</h1>
-        
+
         <div id="wrapper">
             <div id="content">
 
@@ -31,4 +31,59 @@
         </div>
         <div id="status" style="display: none; ">&nbsp;<span style="display: inline; ">Finished!</span>&nbsp;</div>
     
-<div id="story-controls" style="display: block; "><a class="change back-from-story" href="off.html"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net/"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net/"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net/"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net/"><i class="icon-plus"></i></a></div></body></html>
+<div id="story-controls" style="display: block; "><a class="change back-from-story" href="off.html"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net/"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net/"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net/"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net/"><i class="icon-plus"></i></a></div></body>
+<script type="text/javascript">
+
+$(document).ready(function () {
+
+    // fim bar
+    $('body').addClass('light');
+    $('body').addClass('serif');
+
+    $(document).on('click', '#story-controls .change-color', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        if ( $('body').hasClass('light') ) {
+            $('body').removeClass('light');
+            $('body').addClass('dark');
+        } else {
+            $('body').addClass('light');
+            $('body').removeClass('dark');
+        }
+    });
+
+    $(document).on('click', '#story-controls .change-font', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        if ( $('body').hasClass('serif') ) {
+            $('body').removeClass('serif');
+            $('body').addClass('sans');
+        } else if ( $('body').hasClass('sans') ) {
+            $('body').removeClass('sans');
+            $('body').addClass('mono');
+        } else {
+            $('body').removeClass('mono');
+            $('body').addClass('serif');
+        }
+    });
+
+    $(document).on('click', '#story-controls .change-larger', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        var currentFontSize = $('#current_story .body').css('font-size');
+        var currentFontSizeNum = parseFloat(currentFontSize, 10);
+        var newFontSize = currentFontSizeNum*1.1;
+        $('#current_story .body').css('font-size', newFontSize, true);
+    });
+
+    $(document).on('click', '#story-controls .change-smaller', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        var currentFontSize = $('#current_story .body').css('font-size');
+        var currentFontSizeNum = parseFloat(currentFontSize, 10);
+        var newFontSize = currentFontSizeNum*0.9;
+        $('#current_story .body').css('font-size', newFontSize, true);
+    });
+});
+</script>
+</html>
