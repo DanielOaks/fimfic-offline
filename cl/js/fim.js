@@ -264,6 +264,16 @@ var fimfic = {
     },
 
     // abstraction classes, to abstract out generic_store below
+    meta: {
+        add: function (id, value, isString) {
+            fimfic.generic_store.add('meta', id, value, isString);
+        }, 
+        get: function (id, isString, callback) {
+            fimfic.generic_store.get('meta', id, isString, function (value) {
+                callback.call(this, value);
+            });
+        }
+    },
     story_info: {
         add: function (id, value, isString) {
             fimfic.generic_store.add('story_info', id, value, isString);
@@ -343,6 +353,8 @@ $(document).ready(function () {
 
     });
 
+    // Now, to make it save the below selections in the 'meta' table thingy!
+
     $(document).on('click', '#story-controls .change-color', function(event) {
         event.preventDefault(); // stop href from messing up things
 
@@ -395,7 +407,7 @@ $(document).ready(function () {
 
                     fimfic.story_html.get(story_id, true, function (html) {
                         $('#current_story .body').append($(html));
-                        $('body').append($('<div id="story-controls"><a class="change back-from-story" href="http://danneh.net">&lt;</a><a class="change change-color" href="http://danneh.net">b</a><a class="change change-font" href="http://danneh.net">f</a><a class="change change-smaller" href="http://danneh.net">-</a><a class="change change-larger" href="http://danneh.net">+</a></div>'));
+                        $('body').append($('<div id="story-controls"><a class="change back-from-story" href="http://danneh.net"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net"><i class="icon-plus"></i></a></div>'));
                         $('#story-controls').hide();
 
                         var toDelete = [];

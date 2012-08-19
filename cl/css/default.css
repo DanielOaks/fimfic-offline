@@ -233,6 +233,12 @@ h1 {
 #story-controls .change:last-child {
 	border-radius: 0 5pt 0 0;
 }
+.light .icon-bg:before {
+	content: '\e7a0'; /* show moon */
+}
+.dark .icon-bg:before {
+	content: '\2600'; /* show sun */
+}
 /*.light #story-controls .change-color {
 	background: #333;
 	color: #fff;
