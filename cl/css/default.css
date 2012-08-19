@@ -93,6 +93,10 @@ h1 {
 	background: #2b2;
 	box-shadow: 0px 0px 10px #2b2;
 }
+.story .head .statbulb.stored {
+	background: #66b;
+	box-shadow: 0px 0px 10px #66b;
+}
 @-webkit-keyframes bulb_blink {
 	0%   { background: #bb2; box-shadow: 0px 0px 10px #bb2; }
 	50%  { background: #442; box-shadow: 0px 0px 5px  #442; }

@@ -9,6 +9,7 @@
 
 
 var fimfic = {
+    isCached: false,
     isOnline: false,
     isLoggedIn: false,
     stories: [],
@@ -103,7 +104,9 @@ var fimfic = {
                     'id': id,
                     'title': title,
                     'description': description,
-                    'author': author
+                    'author': {
+                        'name': author
+                    }
                 });
             });
 
@@ -125,30 +128,82 @@ var fimfic = {
     // put stories from fimfic.listedStories into the page
     //  typically called right after listStories
     showListedStories: function () {
-        $('#content').append($('<div id="stories"></div>'));
-
         $.each(fimfic.listedStories, function() {
+            if ($('#stories').find('[fim_id="'+this.id+'"]').length > 0) {
+                // already exists, just mark green
+            } else {
+                story = $('<div class="story"></div>');
+                story.attr('fim_id', this.id); // because we mess with the fimfic.listedStories array,
+                                               //  we need this to be able to find correct divs later
 
-            story = $('<div class="story"></div>');
-            story.attr('fim_id', this.id); // because we mess with the fimfic.listedStories array,
-                                           //  we need this to be able to find correct divs later
+                storyheader = $('<div class="head"></div>');
+                story.append(storyheader);
 
-            storyheader = $('<div class="head"></div>');
-            story.append(storyheader);
+                storyheader.append($('<div class="statback"><div class="statbulb notready"></div></div>'));
 
-            storyheader.append($('<div class="statback"><div class="statbulb notready"></div></div>'));
-
-            storyheader.append($('<h2></h2>').text(this.title));
-            storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
-            storyheader.append($('<span class="author"></span>').text(this.author));
+                storyheader.append($('<h2></h2>').text(this.title));
+                storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
+                storyheader.append($('<span class="author"></span>').text(this.author));
 
 
-            storybody = $('<div class="body"></div>');
-            story.append(storybody);
+                storybody = $('<div class="body"></div>');
+                story.append(storybody);
 
-            storybody.append($('<span class="description"></span>').text(this.description));
+                storybody.append($('<span class="description"></span>').text(this.description));
 
-            $('#stories').append(story);
+                $('#stories').append(story);
+            }
+        });
+    },
+
+    // put stories from database into the page
+    showDatabaseStories: function (callback) {
+        fimfic.story_info.count(function (values) {
+
+            // stolen from http://stackoverflow.com/questions/5223/length-of-javascript-object-ie-associative-array
+            var values_len = values.length ? --values.length : -1;
+            for (var k in values)
+                values_len++;
+
+            if (values_len < 1) {
+                fimfic.isCached = false;
+            } else {
+                // we have stories cached
+                fimfic.isCached = true;
+
+                var timesRun = 0;
+                var timesToRun = values_len;
+
+                $.each(values, function () {
+                    story = $('<div class="story"></div>');
+
+                    story.attr('fim_id', this.id); // keeping track of things
+
+                    storyheader = $('<div class="head"></div>');
+                    story.append(storyheader);
+
+                    storyheader.append($('<div class="statback"><div class="statbulb stored"></div></div>'));
+
+                    storyheader.append($('<h2></h2>').text(this.title));
+                    storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
+                    storyheader.append($('<span class="author"></span>').text(this.author.name));
+
+
+                    storybody = $('<div class="body"></div>');
+                    story.append(storybody);
+
+                    storybody.append($('<span class="description"></span>').text(this.short_description));
+                    // if we want the long description, we'll want to write a full bbcode parser, and all that
+
+                    $('#stories').append(story);
+
+                    timesRun += 1;
+
+                    if (timesRun == timesToRun) {
+                        callback.call();
+                    }
+                });
+            }
         });
     },
 
@@ -158,14 +213,14 @@ var fimfic = {
         var currentStory = fimfic.listedStories.shift(); // pops first story off into currectStory
 
         var bulb = $('#stories .story[fim_id="'+currentStory.id+'"] .statbulb');
-        $(bulb).removeClass('notready').addClass('loading');
+        $(bulb).removeClass('notready').removeClass('stored').addClass('loading');
 
         var currentJSON = $.getJSON('http://www.fimfiction.net/api/story.php?story=' + currentStory.id);
 
         currentJSON.success(function (data) {
             // pop old id off story_info and compare to new info
             // if necessary, update the html for the story and continue
-            fimfic.story_info.get(data.story.id, false, function (value) {
+            fimfic.story_info.get(data.story.id, function (value) {
                 value = ((typeof value === "undefined") || (value === null)) ? [] : value;
                 if (value.length > 0) {
                     console.log('return value found: ', value);
@@ -182,7 +237,7 @@ var fimfic = {
 
                         request.done(function (html) {
                             html = html.split('</head>')[1]; // so it's easier to integrate later
-                            fimfic.story_html.add(data.story.id, html, true);
+                            fimfic.story_html.add(data.story.id, html);
 
                             fimfic.recurseListedStoriesFinish(bulb, callback);
                         });
@@ -230,7 +285,7 @@ var fimfic = {
 
     // checks to see whether we should get new story html
     should_get_html: function (oldData, newData, callback) {
-        fimfic.story_html.get(newData.id, true, function (value) {
+        fimfic.story_html.get(newData.id, function (value) {
             // new story, no html stored yet
             if (value === null) {
                 callback.call(this, true);
@@ -265,31 +320,46 @@ var fimfic = {
 
     // abstraction classes, to abstract out generic_store below
     meta: {
-        add: function (id, value, isString) {
-            fimfic.generic_store.add('meta', id, value, isString);
+        add: function (id, value) {
+            fimfic.generic_store.add('meta', id, value);
         }, 
-        get: function (id, isString, callback) {
-            fimfic.generic_store.get('meta', id, isString, function (value) {
+        get: function (id, callback) {
+            fimfic.generic_store.get('meta', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        count: function (callback) {
+            fimfic.generic_store.count('meta', function (value) {
                 callback.call(this, value);
             });
         }
     },
     story_info: {
-        add: function (id, value, isString) {
-            fimfic.generic_store.add('story_info', id, value, isString);
+        add: function (id, value) {
+            fimfic.generic_store.add('story_info', id, value);
         }, 
-        get: function (id, isString, callback) {
-            fimfic.generic_store.get('story_info', id, isString, function (value) {
+        get: function (id, callback) {
+            fimfic.generic_store.get('story_info', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        count: function (callback) {
+            fimfic.generic_store.count('story_info', function (value) {
                 callback.call(this, value);
             });
         }
     },
     story_html: {
-        add: function (id, value, isString) {
-            fimfic.generic_store.add('story_html', id, value, isString);
+        add: function (id, value) {
+            fimfic.generic_store.add('story_html', id, value);
         }, 
-        get: function (id, isString, callback) {
-            fimfic.generic_store.get('story_html', id, isString, function (value) {
+        get: function (id, callback) {
+            fimfic.generic_store.get('story_html', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        count: function (callback) {
+            fimfic.generic_store.count('story_html', function (value) {
                 callback.call(this, value);
             });
         }
@@ -297,35 +367,46 @@ var fimfic = {
 
     // need this to deal with stuff like json conversion automatically
     generic_store: {
-        add: function (store, id, value, isString) {
-            isString = (typeof isString === "undefined") ? false : isString;
-
-            if (!isString) {
-                // convert to a string
-                value = $.toJSON(value)
-            }
+        add: function (store, id, value) {
+            // convert to a string
+            value = $.toJSON(value)
             
             $.indexedDB('fimfic_offline').objectStore(store).put(value, id);
             // dunno why, but Chrome seems to barf if indexeddb holds actual data, rather than
             //  a plain old string... Implicitly convert stuff to strings, herpa
         },
 
-        get: function (store, id, isString, callback) {
-            isString = (typeof isString === "undefined") ? false : isString;
-
+        get: function (store, id, callback) {
             var promise = $.indexedDB('fimfic_offline').objectStore(store).get(id);
 
             promise.done(function (value, event) {
-                if (!isString) {
-                    // turn back into object from json storage
-                    value = $.parseJSON(value);
-                }
+                // turn back into object from json storage
+                value = $.parseJSON(value);
 
                 callback.call(this, value);
             });
 
             promise.fail(function (error, event) {
-                console.log('generic_store.get failed: ', store, id, isString, error, event);
+                console.log('generic_store.get failed: ', store, id, error, event);
+
+                callback.call(null);
+            });
+        },
+
+        count: function (store, callback) {
+            var allValues = {};
+
+            var promise = $.indexedDB('fimfic_offline').objectStore(store).each(function (item) {
+                // turn objects back into object from json storage
+                allValues[item.key] = $.parseJSON(item.value);
+            });
+
+            promise.done(function (value, event) {
+                callback.call(this, allValues);
+            });
+
+            promise.fail(function (error, event) {
+                console.log('generic_store.count failed: ', store, id, error, event);
 
                 callback.call(null);
             });
@@ -361,11 +442,11 @@ $(document).ready(function () {
         if ( $('body').hasClass('light') ) {
             $('body').removeClass('light');
             $('body').addClass('dark');
-            fimfic.meta.add('color', 'dark', true);
+            fimfic.meta.add('color', 'dark');
         } else {
             $('body').addClass('light');
             $('body').removeClass('dark');
-            fimfic.meta.add('color', 'light', true);
+            fimfic.meta.add('color', 'light');
         }
     });
 
@@ -375,15 +456,15 @@ $(document).ready(function () {
         if ( $('body').hasClass('serif') ) {
             $('body').removeClass('serif');
             $('body').addClass('sans');
-            fimfic.meta.add('font-face', 'sans', true);
+            fimfic.meta.add('font-face', 'sans');
         } else if ( $('body').hasClass('sans') ) {
             $('body').removeClass('sans');
             $('body').addClass('mono');
-            fimfic.meta.add('font-face', 'mono', true);
+            fimfic.meta.add('font-face', 'mono');
         } else {
             $('body').removeClass('mono');
             $('body').addClass('serif');
-            fimfic.meta.add('font-face', 'serif', true);
+            fimfic.meta.add('font-face', 'serif');
         }
     });
 
@@ -411,7 +492,7 @@ $(document).ready(function () {
 
     // setup story click handlers
     $(document).on('click', '#stories .story', function(event) {
-        if ($(this).find('.statbulb').hasClass('ready') || $(this).find('.statbulb').hasClass('dbcached')) {
+        if ($(this).find('.statbulb').hasClass('ready') || $(this).find('.statbulb').hasClass('stored')) {
             var story_id = parseInt($(this).attr('fim_id'));
 
             $('#stories').fadeOut(200, function () {
@@ -420,7 +501,7 @@ $(document).ready(function () {
                 $('#current_story').append($('<div class="head"></div>'));
                 $('#current_story').append($('<div class="body"></div>'));
 
-                fimfic.story_info.get(story_id, false, function (value) {
+                fimfic.story_info.get(story_id, function (value) {
 
                     $('#current_story .head').append($('<h2></h2>').text(value.title));
                     $('#current_story .head').append($('<span>&nbsp;&nbsp;by </span>'));
@@ -432,7 +513,7 @@ $(document).ready(function () {
                     //  the chapter title, display properly. the other elements FimFic adds are
                     //  probably useful, but for now they just mess up layout
 
-                    fimfic.story_html.get(story_id, true, function (html) {
+                    fimfic.story_html.get(story_id, function (html) {
                         $('#current_story .body').append($(html));
                         $('body').append($('<div id="story-controls"><a class="change back-from-story" href="http://danneh.net"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net"><i class="icon-plus"></i></a></div>'));
                         $('#story-controls').hide();
@@ -455,17 +536,15 @@ $(document).ready(function () {
 
                                         if (index == (toDelete.length-1)) {
                                             // set options from database
-                                            fimfic.meta.get('font-face', true, function (value) {
+                                            fimfic.meta.get('font-face', function (value) {
                                                 value = ((typeof value === "undefined") || (value === null)) ? 'serif' : value;
                                                 $('body').addClass(value);
 
-                                                fimfic.meta.get('font-size', false, function (value) {
-                                                    console.log('font size is ', value);
+                                                fimfic.meta.get('font-size', function (value) {
                                                     value = ((typeof value === "undefined") || (value === null)) ? '100%' : value;
                                                     $('#current_story .body').css('font-size', value, true);
-                                                    console.log('font size is ', value);
 
-                                                    fimfic.meta.get('color', true, function (value) {
+                                                    fimfic.meta.get('color', function (value) {
                                                         value = ((typeof value === "undefined") || (value === null)) ? 'light' : value;
                                                         $('body').addClass(value);
 
@@ -493,42 +572,45 @@ $(document).ready(function () {
 
     // Initialise database
     fimfic.initDatabase(function () {
-        fimfic.updateStories(function (code) {
-            fimfic.showListedStories();
+        fimfic.showDatabaseStories(function () {
+            fimfic.updateStories(function (code) {
 
-            // Check DB up here somewhere, for if no network access
-            //  assume we fall through to below if we have network access,
-            //  or this is a new database with no info in it
-
-            // Check 'net connection
-            if (fimfic.isLoggedIn) {
-                if (fimfic.listStoriesStatus == 'success') {
+                if ((fimfic.isCached) && (!fimfic.isOnline)) {
                     $('#status span').fadeOut(400, function () {
-                        $('#status span').text("Checking whether anything's updated").fadeIn();
+                        $('#status span').text("Stories are cached, operating in offline mode").fadeIn();
                     });
+                    $('#status').delay(2000).fadeOut(400);
+                } else if (fimfic.isLoggedIn) {
+                    fimfic.showListedStories();
 
-                    fimfic.recurseListedStories(function () {
+                    if (fimfic.listStoriesStatus == 'success') {
                         $('#status span').fadeOut(400, function () {
-                            $('#status span').text("Finished!").fadeIn();
+                            $('#status span').text("Checking whether anything's updated").fadeIn();
                         });
-                        $('#status').delay(2000).fadeOut(400);
-                    });
 
+                        fimfic.recurseListedStories(function () {
+                            $('#status span').fadeOut(400, function () {
+                                $('#status span').text("Finished!").fadeIn();
+                            });
+                            $('#status').delay(2000).fadeOut(400);
+                        });
+
+                    } else {
+                        $('#status span').fadeOut(400, function () {
+                            $('#status span').text("Failed to access Read Later list").fadeIn();
+                        });
+                    }
+                } else if (fimfic.isOnline) {
+                    $('#status span').fadeOut(400, function () {
+                        $('#status span').text("You need to login to fimfiction to use this site").fadeIn();
+                    });
                 } else {
                     $('#status span').fadeOut(400, function () {
-                        $('#status span').text("Failed to access Read Later list").fadeIn();
+                        $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
                     });
                 }
-            } else if (fimfic.isOnline) {
-                $('#status span').fadeOut(400, function () {
-                    $('#status span').text("You need to login to fimfiction to use this site").fadeIn();
-                });
-            } else {
-                $('#status span').fadeOut(400, function () {
-                    $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
-                });
-            }
 
+            });
         });
     });
 });
