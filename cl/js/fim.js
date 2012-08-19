@@ -361,9 +361,11 @@ $(document).ready(function () {
         if ( $('body').hasClass('light') ) {
             $('body').removeClass('light');
             $('body').addClass('dark');
+            fimfic.meta.add('color', 'dark', true);
         } else {
             $('body').addClass('light');
             $('body').removeClass('dark');
+            fimfic.meta.add('color', 'light', true);
         }
     });
 
@@ -373,13 +375,38 @@ $(document).ready(function () {
         if ( $('body').hasClass('serif') ) {
             $('body').removeClass('serif');
             $('body').addClass('sans');
+            fimfic.meta.add('font-face', 'sans', true);
         } else if ( $('body').hasClass('sans') ) {
             $('body').removeClass('sans');
             $('body').addClass('mono');
+            fimfic.meta.add('font-face', 'mono', true);
         } else {
             $('body').removeClass('mono');
             $('body').addClass('serif');
+            fimfic.meta.add('font-face', 'serif', true);
         }
+    });
+
+    $(document).on('click', '#story-controls .change-larger', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        var currentFontSize = $('#current_story .body').css('font-size');
+        var currentFontSizeNum = parseFloat(currentFontSize, 10);
+        var newFontSize = currentFontSizeNum*1.1;
+        $('#current_story .body').css('font-size', newFontSize, true);
+
+        fimfic.meta.add('font-size', newFontSize);
+    });
+
+    $(document).on('click', '#story-controls .change-smaller', function(event) {
+        event.preventDefault(); // stop href from messing up things
+
+        var currentFontSize = $('#current_story .body').css('font-size');
+        var currentFontSizeNum = parseFloat(currentFontSize, 10);
+        var newFontSize = currentFontSizeNum*0.9;
+        $('#current_story .body').css('font-size', newFontSize, true);
+
+        fimfic.meta.add('font-size', newFontSize);
     });
 
     // setup story click handlers
@@ -427,8 +454,29 @@ $(document).ready(function () {
                                         $($('#current_story .body').children()[value-offset]).remove();
 
                                         if (index == (toDelete.length-1)) {
-                                            $('#current_story').fadeIn(200, function () {
-                                                $('#story-controls').slideDown(200)
+                                            // set options from database
+                                            fimfic.meta.get('font-face', true, function (value) {
+                                                value = ((typeof value === "undefined") || (value === null)) ? 'serif' : value;
+                                                $('body').addClass(value);
+
+                                                fimfic.meta.get('font-size', false, function (value) {
+                                                    console.log('font size is ', value);
+                                                    value = ((typeof value === "undefined") || (value === null)) ? '100%' : value;
+                                                    $('#current_story .body').css('font-size', value, true);
+                                                    console.log('font size is ', value);
+
+                                                    fimfic.meta.get('color', true, function (value) {
+                                                        value = ((typeof value === "undefined") || (value === null)) ? 'light' : value;
+                                                        $('body').addClass(value);
+
+                                                        $('#current_story').fadeIn(200, function () {
+                                                            $('#story-controls').slideDown(200)
+                                                        });
+
+                                                    });
+
+                                                });
+
                                             });
                                         } else {
                                             offset += 1;

@@ -172,6 +172,7 @@ h1 {
 	padding: 20px;
 	text-align: justify;
 	word-wrap: break-word;
+	font-size: 100%;
 }
 #current_story .body p.indented {
 	text-indent: 3em;
