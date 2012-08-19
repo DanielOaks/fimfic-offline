@@ -47,9 +47,9 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('click', '#story-controls .back-from-story', function () {
+    $(document).on('click', '#story-controls .back-from-story', function (event) {
         event.preventDefault(); // stop href from messing up things
-        
+
         $('#story-controls').slideUp(200, function () {
             $('#current_story').fadeOut(200, function () {
                 $('#stories').fadeIn();
