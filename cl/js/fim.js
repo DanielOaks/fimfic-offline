@@ -441,12 +441,12 @@ $(document).ready(function () {
     });
 
     // fim bar
-    $(document).on('click', '#story-controls .back-from-story', function(event) {
+    $(document).on('click', '.story-controls .back-from-story', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         $('#footer').fadeOut(200);
-        $('#story-controls').slideUp(200, function () {
-            $('#story-controls').remove();
+        $('.story-controls').slideUp(200, function () {
+            $('.story-controls').remove();
             $('#current_story').fadeOut(200, function () {
                 $(this).remove();
                 $('#stories').fadeIn();
@@ -458,7 +458,7 @@ $(document).ready(function () {
 
     // Now, to make it save the below selections in the 'meta' table thingy!
 
-    $(document).on('click', '#story-controls .change-color', function(event) {
+    $(document).on('click', '.story-controls .change-color', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         if ( $('body').hasClass('light') ) {
@@ -472,7 +472,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '#story-controls .change-font', function(event) {
+    $(document).on('click', '.story-controls .change-font', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         if ( $('body').hasClass('serif') ) {
@@ -490,7 +490,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '#story-controls .change-larger', function(event) {
+    $(document).on('click', '.story-controls .change-larger', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         var currentFontSize = $('#current_story .body').css('font-size');
@@ -501,7 +501,7 @@ $(document).ready(function () {
         fimfic.meta.add('font-size', newFontSize);
     });
 
-    $(document).on('click', '#story-controls .change-smaller', function(event) {
+    $(document).on('click', '.story-controls .change-smaller', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         var currentFontSize = $('#current_story .body').css('font-size');
@@ -538,8 +538,9 @@ $(document).ready(function () {
 
                     fimfic.story_html.get(story_id, function (html) {
                         $('#current_story .body').append($(html));
-                        $('body').append($('<div id="story-controls"><a class="change back-from-story" href="http://danneh.net"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net"><i class="icon-plus"></i></a></div>'));
-                        $('#story-controls').hide();
+                        $('body').append($('<div class="story-controls return"><a class="change back-from-story" href="http://danneh.net"><i class="icon-left-open"></i></a></div>'));
+                        $('body').append($('<div class="story-controls control"><a class="change change-color" href="http://danneh.net"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net"><i class="icon-plus"></i></a></div>'));
+                        $('.story-controls').hide();
 
                         var toDelete = [];
                         var continueAddingItems = true;
@@ -573,7 +574,7 @@ $(document).ready(function () {
 
                                                         $('#current_story').fadeIn(200, function () {
                                                             $('#footer').fadeIn();
-                                                            $('#story-controls').slideDown(200);
+                                                            $('.story-controls').slideDown(200);
                                                         });
 
                                                     });

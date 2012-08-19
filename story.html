@@ -40,7 +40,10 @@
         </div>
         <div id="status" style="display: none; ">&nbsp;<span style="display: inline; ">Finished!</span>&nbsp;</div>
     
-<div id="story-controls" style="display: block; "><a class="change back-from-story" href="off.html"><i class="icon-left-open"></i></a><a class="change change-color" href="http://danneh.net/"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net/"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net/"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net/"><i class="icon-plus"></i></a></div></body>
+    <div class="story-controls return"><a class="change back-from-story" href="off.html"><i class="icon-left-open"></i></a></div>
+
+    <div class="story-controls control"><a class="change change-color" href="http://danneh.net/"><i class="icon-bg"></i></a><a class="change change-font" href="http://danneh.net/"><i class="icon-font"></i></a><a class="change change-smaller" href="http://danneh.net/"><i class="icon-minus"></i></a><a class="change change-larger" href="http://danneh.net/"><i class="icon-plus"></i></a></div>
+</body>
 <script type="text/javascript">
 
 $(document).ready(function () {
@@ -57,7 +60,7 @@ $(document).ready(function () {
     $('body').addClass('light');
     $('body').addClass('serif');
 
-    $(document).on('click', '#story-controls .change-color', function(event) {
+    $(document).on('click', '.story-controls .change-color', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         if ( $('body').hasClass('light') ) {
@@ -69,7 +72,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '#story-controls .change-font', function(event) {
+    $(document).on('click', '.story-controls .change-font', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         if ( $('body').hasClass('serif') ) {
@@ -84,7 +87,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '#story-controls .change-larger', function(event) {
+    $(document).on('click', '.story-controls .change-larger', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         var currentFontSize = $('#current_story .body').css('font-size');
@@ -93,7 +96,7 @@ $(document).ready(function () {
         $('#current_story .body').css('font-size', newFontSize, true);
     });
 
-    $(document).on('click', '#story-controls .change-smaller', function(event) {
+    $(document).on('click', '.story-controls .change-smaller', function(event) {
         event.preventDefault(); // stop href from messing up things
 
         var currentFontSize = $('#current_story .body').css('font-size');
