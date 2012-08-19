@@ -608,10 +608,17 @@ $(document).ready(function () {
                         });
                         // actually check for updates and stuff, you know
 
-                        $('#status span').fadeOut(400, function () {
-                            $('#status span').text("Finished!").fadeIn();
-                        });
-                        $('#status').delay(2000).fadeOut(400);
+                        if (fimfic.isCached) {
+                            $('#status span').fadeOut(400, function () {
+                                $('#status span').text("Loaded!").fadeIn();
+                                $('#status').delay(2000).fadeOut(400);
+                            });
+                        } else {
+                            $('#status span').fadeOut(400, function () {
+                                $('#status span').text("Click on a story to store it offline. Click again to open it!").fadeIn();
+                                $('#status').delay(8000).fadeOut(400);
+                            });
+                        }
 
                     } else {
                         $('#status span').fadeOut(400, function () {
