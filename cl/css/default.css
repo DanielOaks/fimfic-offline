@@ -71,7 +71,7 @@ body {
 }
 
 .dark .story {
-	background-color: #8c8369;
+	background-color: #6d6652;
 	color: #eee;
 }
 .story {
@@ -175,7 +175,7 @@ body {
 
 
 .dark #current_story{
-	background-color: #8c8369;
+	background-color: #6d6652;
 	color: #eee;
 }
 
@@ -372,7 +372,7 @@ body {
 
 
 .dark #footer {
-	background-color: #8c8369;
+	background-color: #6d6652;
 	color: #ddd;
 }
 #footer {
