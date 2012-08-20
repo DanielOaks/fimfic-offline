@@ -104,9 +104,11 @@ $(document).ready(function () {
         $('.statbulb.stored').parent().parent().parent().slideDown();
     });
 
-    $(document).on('click', '.button.clearall', function (event) {
+    $(document).on('click', '#navbar .clearall', function (event) {
         event.preventDefault(); // stop href from messing up things
-        $('.statbulb').removeClass('ready').removeClass('stored').addClass('notready');
+        if (confirm('Clear all stories?')) {
+            $('.statbulb').removeClass('ready').removeClass('stored').addClass('notready');
+        }
     });
 
     $(document).on('click', '#stories .story', function (event) {

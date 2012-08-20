@@ -192,10 +192,21 @@ var fimfic = {
                     storybody = $('<div class="body"></div>');
                     story.append(storybody);
 
-                    storybody.append($('<span class="description"></span>').text(this.short_description));
+                    if (fimfic.isOnline) {
+                        storybody.append($('<img class="storyimage" />').attr('src', 'http:'+this.image));
+                    }
+                    if (this.short_description == '') {
+                        var description = this.description;
+                    } else {
+                        var description = this.short_description;
+                    }
+                    storybody.append($('<span class="description"></span>').text(description));
                     // if we want the long description, we'll want to write a full bbcode parser, and all that
+                    if (fimfic.isOnline) {
+                        storybody.append($('<div class="storyimagefix"></div>'));
+                    }
 
-                    $('#stories').append(story);
+                    $('#stories').prepend(story);
 
                     timesRun += 1;
 
@@ -528,6 +539,14 @@ $(document).ready(function () {
         });
         $('.statbulb.ready').parent().parent().parent().slideDown();
         $('.statbulb.stored').parent().parent().parent().slideDown();
+    });
+
+    // navbar clearall
+    $(document).on('click', '#navbar .clearall', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        if (confirm('Clear all stories?')) {
+            $('#stories').fadeOut();
+        }
     });
 
     // fim bar
