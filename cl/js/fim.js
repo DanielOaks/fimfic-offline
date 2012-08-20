@@ -192,7 +192,7 @@ var fimfic = {
                     storybody = $('<div class="body"></div>');
                     story.append(storybody);
 
-                    if (fimfic.isOnline) {
+                    if (fimfic.isOnline && (!(typeof this.image == "undefined"))) {
                         storybody.append($('<img class="storyimage" />').attr('src', 'http:'+this.image));
                     }
                     if (this.short_description == '') {
@@ -202,7 +202,7 @@ var fimfic = {
                     }
                     storybody.append($('<span class="description"></span>').text(description));
                     // if we want the long description, we'll want to write a full bbcode parser, and all that
-                    if (fimfic.isOnline) {
+                    if (fimfic.isOnline && (!(typeof this.image == "undefined"))) {
                         storybody.append($('<div class="storyimagefix"></div>'));
                     }
 
@@ -714,61 +714,63 @@ $(document).ready(function () {
     });
 
     // Initialise database
-    fimfic.initDatabase(function () {
-        fimfic.showDatabaseStories(function () {
+    fimfic.initConnection(function () {
+        fimfic.initDatabase(function () {
+            fimfic.showDatabaseStories(function () {
 
-            fimfic.meta.get('color', function (value) {
-                value = ((typeof value === "undefined") || (value === null)) ? 'light' : value;
-                $('body').addClass(value);
-                fimfic.updateStories(function (code) {
+                fimfic.meta.get('color', function (value) {
+                    value = ((typeof value === "undefined") || (value === null)) ? 'light' : value;
+                    $('body').addClass(value);
+                    fimfic.updateStories(function (code) {
 
-                    if ((fimfic.isCached) && (!fimfic.isOnline)) {
-                        $('#status span').fadeOut(400, function () {
-                            $('#status span').text("Stories are cached, operating in offline mode").fadeIn();
-                        });
-                        $('#status').delay(2000).fadeOut(400);
-                    } else if (fimfic.isLoggedIn) {
-                        fimfic.showListedStories();
-
-                        if (fimfic.listStoriesStatus == 'success') {
+                        if ((fimfic.isCached) && (!fimfic.isOnline)) {
                             $('#status span').fadeOut(400, function () {
-                                $('#status span').text("Checking whether anything's updated").fadeIn();
+                                $('#status span').text("Stories are cached, operating in offline mode").fadeIn();
                             });
-                            // actually check for updates and stuff, you know
+                            $('#status').delay(2000).fadeOut(400);
+                        } else if (fimfic.isLoggedIn) {
+                            fimfic.showListedStories();
 
-                            if (fimfic.isCached) {
+                            if (fimfic.listStoriesStatus == 'success') {
                                 $('#status span').fadeOut(400, function () {
-                                    $('#status span').text("Loaded!").fadeIn();
-                                    $('#status').delay(2000).fadeOut(400);
+                                    $('#status span').text("Checking whether anything's updated").fadeIn();
                                 });
+                                // actually check for updates and stuff, you know
+
+                                if (fimfic.isCached) {
+                                    $('#status span').fadeOut(400, function () {
+                                        $('#status span').text("Loaded!").fadeIn();
+                                        $('#status').delay(2000).fadeOut(400);
+                                    });
+                                } else {
+                                    $('#status span').fadeOut(400, function () {
+                                        $('#status span').text("Click on a story to store it offline. Click again to open it!").fadeIn();
+                                        $('#status').delay(8000).fadeOut(400);
+                                    });
+                                }
+
                             } else {
                                 $('#status span').fadeOut(400, function () {
-                                    $('#status span').text("Click on a story to store it offline. Click again to open it!").fadeIn();
-                                    $('#status').delay(8000).fadeOut(400);
+                                    $('#status span').text("Failed to access Read Later list").fadeIn();
                                 });
                             }
+                        } else if (fimfic.isOnline) {
+                            $('#status span').fadeOut(400, function () {
+                                $('#status span').text("Login to FimFic to display your Read Later stories").fadeIn();
+                                fimfic.switchToBrowse();
+                                $('#navbar .readlater').hide();
+                                $('#navbar .browse').hide();
+                            });
 
+                            // switch to Browse list
                         } else {
                             $('#status span').fadeOut(400, function () {
-                                $('#status span').text("Failed to access Read Later list").fadeIn();
+                                $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
                             });
                         }
-                    } else if (fimfic.isOnline) {
-                        $('#status span').fadeOut(400, function () {
-                            $('#status span').text("Login to FimFic to display your Read Later stories").fadeIn();
-                            fimfic.switchToBrowse();
-                            $('#navbar .readlater').hide();
-                            $('#navbar .browse').hide();
-                        });
+                    });
 
-                        // switch to Browse list
-                    } else {
-                        $('#status span').fadeOut(400, function () {
-                            $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
-                        });
-                    }
                 });
-
             });
         });
     });
