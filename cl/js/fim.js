@@ -13,6 +13,7 @@ var fimfic = {
     isOnline: false,
     isLoggedIn: false,
     stories: [],
+    request_url: 'http://www.fimfiction.net/index.php?view=category&read_it_later=1&compact_view=1',
 
     // init fimfic connection, see if online and/or logged in
     initConnection: function (callback) {
@@ -78,7 +79,7 @@ var fimfic = {
     // return list of stories in read later list, from site
     listStories: function (callback) {
         var request = $.ajax({
-            url: "http://www.fimfiction.net/index.php?view=category&read_it_later=1&compact_view=1"
+            url: fimfic.request_url
         });
 
 
@@ -257,6 +258,20 @@ var fimfic = {
                 }
                 fimfic.story_info.add(data.story.id, data.story);
 
+                // get image - store in story_pics store as a base64 string,
+                //  to put into an image tag later
+                // (check whether you can simply put a base64 string inside an img tag,
+                //   and have it automatically change size to fit)
+
+                // full image, or just thumb? Probably just thumb
+
+                // also, get local copy of both the Python and jQuery docs
+
+                // also, code story deletion stuff
+                
+                // Story Controls: ^ button to make controls roll into Navbar
+                // Next Page/Get More button, etc
+
                 // if story has new chapters, has updated, etc
                 fimfic.should_get_html(value, data.story, function (getHtml) {
                     callback.call(this, data, getHtml);
@@ -311,6 +326,26 @@ var fimfic = {
                 callback.call(this, false);
             }
         })
+    },
+
+    // switches to to-read list
+    switchToReadLater: function () {
+        fimfic.request_url = 'http://www.fimfiction.net/index.php?view=category&read_it_later=1&compact_view=1';
+        fimfic.switchList();
+    },
+    // switches to browse
+    switchToBrowse: function () {
+        fimfic.request_url = 'http://www.fimfiction.net/index.php?view=category&compact_view=1';
+        fimfic.switchList();
+    },
+    // switches to new list
+    switchList: function () {
+        $('.statbulb.notready').parent().parent().parent().slideUp(function () {
+            $(this).remove()
+        });
+        fimfic.listStories(function () {
+            fimfic.showListedStories();
+        });
     },
 
 
@@ -373,6 +408,21 @@ var fimfic = {
         },
         count: function (callback) {
             fimfic.generic_store.count('story_html', function (value) {
+                callback.call(this, value);
+            });
+        }
+    },
+    story_pics: {
+        add: function (id, value) {
+            fimfic.generic_store.add('story_pics', id, value);
+        }, 
+        get: function (id, callback) {
+            fimfic.generic_store.get('story_pics', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        count: function (callback) {
+            fimfic.generic_store.count('story_pics', function (value) {
                 callback.call(this, value);
             });
         }
@@ -440,8 +490,47 @@ $(document).ready(function () {
         $('#footer .body').slideToggle();
     });
 
-    // fim bar
 
+    jQuery.fn.slideLeftHide = function( speed, callback ) { this.animate( { width: "hide", paddingLeft: "hide", paddingRight: "hide", marginLeft: "hide", marginRight: "hide" }, speed, callback ); }
+    jQuery.fn.slideLeftShow = function( speed, callback ) { this.animate( { width: "show", paddingLeft: "show", paddingRight: "show", marginLeft: "show", marginRight: "show" }, speed, callback ).css('display', 'inline-block'); }
+
+    // navbar browse
+    $(document).on('click', '#navbar .browse', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        fimfic.switchToBrowse();
+        $(this).slideLeftHide(function () {
+            $('#navbar .readlater').slideLeftShow();
+        });
+    });
+    // navbar readlater
+    $(document).on('click', '#navbar .readlater', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        fimfic.switchToReadLater();
+        $(this).slideLeftHide(function () {
+            $('#navbar .browse').slideLeftShow();
+        });
+    });
+
+    // navbar show only new stories
+    $(document).on('click', '#navbar .shownew', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        $(this).slideLeftHide(function () {
+            $('#navbar .showall').slideLeftShow();
+        });
+        $('.statbulb.ready').parent().parent().parent().slideUp();
+        $('.statbulb.stored').parent().parent().parent().slideUp();
+    });
+    // navbar show all stories
+    $(document).on('click', '#navbar .showall', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        $(this).slideLeftHide(function () {
+            $('#navbar .shownew').slideLeftShow();
+        });
+        $('.statbulb.ready').parent().parent().parent().slideDown();
+        $('.statbulb.stored').parent().parent().parent().slideDown();
+    });
+
+    // fim bar
     function backfromstory () {
         $('#footer').fadeOut(200);
         $('.story-controls').slideUp(200, function () {
@@ -647,8 +736,13 @@ $(document).ready(function () {
                         }
                     } else if (fimfic.isOnline) {
                         $('#status span').fadeOut(400, function () {
-                            $('#status span').text("You need to login to fimfiction to use this site").fadeIn();
+                            $('#status span').text("Login to FimFic to display your Read Later stories").fadeIn();
+                            fimfic.switchToBrowse();
+                            $('#navbar .readlater').hide();
+                            $('#navbar .browse').hide();
                         });
+
+                        // switch to Browse list
                     } else {
                         $('#status span').fadeOut(400, function () {
                             $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();

@@ -22,6 +22,37 @@ body {
 	font-family: sans-serif;
 }
 
+.dark #navbar {
+	background-color: #303738;
+}
+#navbar {
+	padding: 5pt 10pt;
+	background: url('../img/navbar_bg.png') #657372;
+	font-size: 90%;
+	border-bottom: 2px solid #3e3424;
+	text-align: center
+}
+.dark #navbar .button {
+	background-color: #6d6652;
+	color: #ddd;
+}
+#navbar .button {
+	display: inline-block;
+	padding: 5pt 7pt;
+	background: #d9d2c1;
+	border-radius: 3pt;
+	box-shadow: 0px 1px 1px #222;
+	cursor: pointer;
+	margin-right: 4pt;
+	white-space: nowrap;
+}
+#navbar .button:last-child {
+	margin-right: 0;
+}
+#navbar .button.showall, #navbar .button.shownew {
+	margin-left: 8pt;
+}
+
 #wrapper {
 	padding: 10pt;
 }
