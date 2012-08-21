@@ -269,6 +269,11 @@ var fimfic = {
                 }
                 fimfic.story_info.add(data.story.id, data.story);
 
+                var storybody = $('[fim_id='+data.story.id+'] .body')
+
+                storybody.prepend($('<img class="storyimage" />').attr('src', 'http:'+data.story.image));
+                storybody.append($('<div class="storyimagefix"></div>'));
+
                 // get image - store in story_pics store as a base64 string,
                 //  to put into an image tag later
                 // (check whether you can simply put a base64 string inside an img tag,
@@ -282,6 +287,8 @@ var fimfic = {
                 
                 // Story Controls: ^ button to make controls roll into Navbar
                 // Next Page/Get More button, etc
+
+                // make display image, etc
 
                 // if story has new chapters, has updated, etc
                 fimfic.should_get_html(value, data.story, function (getHtml) {
@@ -490,11 +497,6 @@ var fimfic = {
 
 
 $(document).ready(function () {
-
-    // header
-    $(document).on('click', '.header', function (event) {
-        window.location = 'http://fimfiction.net';
-    });
 
     // footer
     $(document).on('click', '#footer .head', function (event) {
@@ -713,7 +715,7 @@ $(document).ready(function () {
         }
     });
 
-    // Initialise database
+    // Initialise everything
     fimfic.initConnection(function () {
         fimfic.initDatabase(function () {
             fimfic.showDatabaseStories(function () {

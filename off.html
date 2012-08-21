@@ -22,7 +22,7 @@
         <link rel="apple-touch-icon-precomposed" href="cl/img/iphone_icon.png"/>
     </head><link rel="stylesheet" type="text/css" href="data:text/css,">
     <body>
-        <div class="header"><h1>FimFic Offline</h1></div>
+        <a id="header" href="http://fimfiction.net"><span>FimFic Offline</span></a>
 
         <div id="navbar">
             <span class="button readlater" style="display: none">Read Later</span>
@@ -56,10 +56,6 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
-
-    $(document).on('click', '.header', function (event) {
-        window.location = 'http://fimfiction.net';
-    });
 
     $(document).on('click', '#footer .head', function (event) {
         event.preventDefault(); // stop href from messing up things
