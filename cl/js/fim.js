@@ -313,8 +313,10 @@ var fimfic = {
                 var storybody = $('[fim_id='+data.story.id+'] .body')
 
                 if (storybody.parent().find('.storyimage').length == 0) {
-                    storybody.prepend($('<img class="storyimage" />').attr('src', 'http:'+data.story.image));
-                    storybody.append($('<div class="storyimagefix"></div>'));
+                    if (fimfic.isOnline && (!(typeof this.image == "undefined"))) {
+                        storybody.prepend($('<img class="storyimage" />').attr('src', 'http:'+data.story.image));
+                        storybody.append($('<div class="storyimagefix"></div>'));
+                    }
                 }
 
                 // todo: all that stuff below
