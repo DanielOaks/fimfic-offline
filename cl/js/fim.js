@@ -317,21 +317,16 @@ var fimfic = {
                     storybody.append($('<div class="storyimagefix"></div>'));
                 }
 
+                // todo: all that stuff below
+
                 // get image - store in story_pics store as a base64 string,
                 //  to put into an image tag later
                 // (check whether you can simply put a base64 string inside an img tag,
                 //   and have it automatically change size to fit)
 
-                // full image, or just thumb? Probably just thumb
-
-                // also, get local copy of both the Python and jQuery docs
-
-                // also, code story deletion stuff
+                // just thumbnail, rather than full image
                 
                 // Story Controls: ^ button to make controls roll into Navbar
-                // Next Page/Get More button, etc
-
-                // make display image, etc
 
                 // if story has new chapters, has updated, etc
                 fimfic.should_get_html(value, data.story, function (getHtml) {
@@ -758,6 +753,7 @@ $(document).ready(function () {
             $('#current_story').fadeOut(200, function () {
                 $(this).remove();
                 $('#footer').fadeIn();
+                $('#page_list').fadeIn();
 
                 $('#stories').fadeIn(200, function () {
                     $('html,body').animate({
@@ -843,6 +839,7 @@ $(document).ready(function () {
         if ($(this).find('.statbulb').hasClass('ready') || $(this).find('.statbulb').hasClass('stored')) {
             var story_id = parseInt($(this).attr('fim_id'));
 
+            $('#page_list').fadeOut(200);
             $('#footer').fadeOut(200);
             $('#stories').fadeOut(200, function () {
                 var current_story = $('<div id="current_story"></div>').hide();
