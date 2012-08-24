@@ -477,7 +477,7 @@ body {
 	border-top-right-radius: 8px;
 	border-bottom-right-radius: 8px;
 }
-#page_list span:hover {
+#page_list .first:hover, #page_list .prev:hover, #page_list .next:hover {
 	background-color: #cfc9b9;
 }
 #page_list .first, #page_list .prev, #page_list .next {
