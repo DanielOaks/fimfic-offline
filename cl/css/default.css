@@ -222,24 +222,26 @@ body {
 	top: -3pt;
 	right: -14pt;
 	float: right;
-	padding: 3pt 1pt 3pt 3pt;
+	padding: 3pt 2pt 3pt 5pt;
 	border-radius: 2pt;
 }
 .story .fim {
 	display: block;
 	position: relative;
 	top: -3pt;
-	right: -6pt;
+	right: -10pt;
 	float: right;
-	padding: 3pt 1pt 3pt 3pt;
+	padding: 3pt 3pt 3pt 5pt;
 	border-radius: 2pt;
 	color: #333;
 }
 .story:hover .delete {
 	background: #c55;
+	color: #222;
 }
 .story:hover .fim {
 	background: #cc5;
+	color: #222;
 }
 .story .drop {
 	background: #33e;
@@ -449,6 +451,66 @@ body {
 .dark .icon-bg:before {
 	content: '\2600'; /* show sun */
 }
+
+
+#page_list {
+	text-align: center;
+}
+#page_list div {
+	display: inline-block;
+	margin: 0 auto;
+	width: auto;
+	text-align: center;
+}
+#page_list span {
+	display: inline-block;
+	padding: 8pt 20pt;
+	cursor: pointer;
+	background-color: #dfd9c9;
+	box-shadow: 0px 1px 2px #38363f;
+}
+#page_list span:first-child {
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+}
+#page_list span:last-child {
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+#page_list span:hover {
+	background-color: #cfc9b9;
+}
+/*#footer .head {
+	cursor: pointer;
+}
+#footer .head i {
+	display: block;
+	text-align: center;
+}
+#footer .body {
+	display: none;
+}
+
+
+.dark #footer {
+	background-color: #6d6652;
+	color: #ddd;
+}
+#footer {
+	padding: 0 10pt 1pt 10pt;
+	background-color: #dfd9c9;
+	color: #38362f;
+	border-radius: 8px;
+	margin-top: 20pt;
+	margin-bottom: 10pt;
+	font-size: 85%;
+	box-shadow: 0px 1px 2px #38363f;
+}
+#footer .head {
+	padding: 11pt 0 10pt;
+	cursor: pointer;
+}*/
+
 
 #footer .head {
 	cursor: pointer;

@@ -14,6 +14,7 @@ var fimfic = {
     isLoggedIn: false,
     stories: [],
     request_url: 'http://www.fimfiction.net/index.php?view=category&read_it_later=1&compact_view=1',
+    page: 1,
 
     // init fimfic connection, see if online and/or logged in
     initConnection: function (callback) {
@@ -79,7 +80,7 @@ var fimfic = {
     // return list of stories in read later list, from site
     listStories: function (callback) {
         var request = $.ajax({
-            url: fimfic.request_url
+            url: fimfic.request_url + '&page=' + fimfic.page
         });
 
 
@@ -91,9 +92,36 @@ var fimfic = {
 
             var parsedhtml = $(html);
             fimfic.checkLoggedIn(parsedhtml);
+            var next = false;
+            $.each($(parsedhtml.find('.page_list')[0]).find('a'), function () {
+                if ($(this).text().indexOf('Next') != -1) {
+                    next = true;
+                }
+            });
+            if (next || (fimfic.page > 1)) {
+                $('#page_list').fadeIn();
+            } else {
+                $('#page_list').fadeOut();
+            }
+            if ((fimfic.page > 1) && ($('#page_list').find('.prev').length < 1)) {
+                $('#page_list div').prepend('<span class="prev" style="display: none;">Prev</span>');
+                $('#page_list .prev').slideLeftShow();
+            } else if (fimfic.page == 1) {
+                $('#page_list .prev').slideLeftHide(function () {
+                    $(this).remove();
+                });
+            }
+            if ((next) && ($('#page_list').find('.next').length < 1)) {
+                $('#page_list div').append('<span class="next" style="display: none;">Next</span>');
+                $('#page_list .next').slideLeftShow();
+            } else if (!next) {
+                $('#page_list .next').slideLeftHide(function () {
+                    $(this).remove();
+                });
+            }
 
             // the following code loops over each row of story table, and manually extracts story data
-            $.each($(parsedhtml).find('#archive_table').children('tbody').children(), function() {
+            $.each($(parsedhtml).find('#archive_table').children('tbody').children(), function () {
                 var id = $(this).find('u a').attr('href').split('/')[2];
                 var title = $(this).find('u a').text();
                 var description = $(this).find('.description').text();
@@ -658,6 +686,18 @@ $(document).ready(function () {
             story.find('.statbulb').removeClass('loading').addClass('notready');
             story.find('.head .delete').hide();
         });
+    });
+
+    // next/prev page
+    $(document).on('click', '#page_list .prev', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        fimfic.page -= 1;
+        fimfic.switchList();
+    });
+    $(document).on('click', '#page_list .next', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        fimfic.page += 1;
+        fimfic.switchList();
     });
 
     // fim bar
