@@ -15,6 +15,7 @@ var fimfic = {
     stories: [],
     request_url: 'http://www.fimfiction.net/index.php?view=category&read_it_later=1&compact_view=1',
     page: 1,
+    currentListedStories: 0,
 
     // init fimfic connection, see if online and/or logged in
     initConnection: function (callback) {
@@ -106,7 +107,12 @@ var fimfic = {
             if ((fimfic.page > 1) && ($('#page_list').find('.prev').length < 1)) {
                 $('#page_list div').prepend('<span class="prev" style="display: none;">Prev</span>');
                 $('#page_list .prev').slideLeftShow();
+                $('#page_list div').prepend('<span class="first" style="display: none;">First</span>');
+                $('#page_list .first').slideLeftShow();
             } else if (fimfic.page == 1) {
+                $('#page_list .first').slideLeftHide(function () {
+                    $(this).remove();
+                });
                 $('#page_list .prev').slideLeftHide(function () {
                     $(this).remove();
                 });
@@ -140,7 +146,9 @@ var fimfic = {
             });
 
             fimfic.listStoriesStatus = 'success';
-            callback.call();
+            if (typeof callback === 'function' && callback()) {
+                callback.call();
+            }
         });
 
 
@@ -155,6 +163,7 @@ var fimfic = {
     // put stories from fimfic.listedStories into the page
     //  typically called right after listStories
     showListedStories: function () {
+        fimfic.currentListedStories = fimfic.listedStories.length;
         $.each(fimfic.listedStories, function() {
             if ($('#stories').find('[fim_id="'+this.id+'"]').length > 0) {
                 // already exists, just mark green
@@ -381,22 +390,23 @@ var fimfic = {
     },
 
     // switches to to-read list
-    switchToReadLater: function () {
+    switchToReadLater: function (callback) {
         fimfic.request_url = 'http://www.fimfiction.net/index.php?view=category&read_it_later=1&compact_view=1';
-        fimfic.switchList();
+        fimfic.switchList(callback);
     },
     // switches to browse
-    switchToBrowse: function () {
+    switchToBrowse: function (callback) {
         fimfic.request_url = 'http://www.fimfiction.net/index.php?view=category&compact_view=1';
-        fimfic.switchList();
+        fimfic.switchList(callback);
     },
     // switches to new list
-    switchList: function () {
-        $('.statbulb.notready').parent().parent().parent().slideUp(function () {
-            $(this).remove()
-        });
+    switchList: function (callback) {
+        $('.statbulb.notready').parent().parent().parent().remove();
         fimfic.listStories(function () {
             fimfic.showListedStories();
+            if (typeof callback === 'function') {
+                callback.call();
+            }
         });
     },
 
@@ -632,17 +642,27 @@ $(document).ready(function () {
     // navbar browse
     $(document).on('click', '#navbar .browse', function (event) {
         event.preventDefault(); // stop href from messing up things
-        fimfic.switchToBrowse();
-        $(this).slideLeftHide(function () {
-            $('#navbar .readlater').slideLeftShow();
+        $(this).slideLeftHide();
+        fimfic.page = 1;
+        $('#wrapper').fadeOut(function () {
+            $('#page_list .page').text(fimfic.page);
+            fimfic.switchToBrowse(function () {
+                $('#navbar .readlater').slideLeftShow();
+                $('#wrapper').fadeIn();
+            });
         });
     });
     // navbar readlater
     $(document).on('click', '#navbar .readlater', function (event) {
         event.preventDefault(); // stop href from messing up things
-        fimfic.switchToReadLater();
-        $(this).slideLeftHide(function () {
-            $('#navbar .browse').slideLeftShow();
+        $(this).slideLeftHide();
+        fimfic.page = 1;
+        $('#wrapper').fadeOut(function () {
+            $('#page_list .page').text(fimfic.page);
+            fimfic.switchToBrowse(function () {
+                $('#navbar .readlater').slideLeftShow();
+                $('#wrapper').fadeIn();
+            });
         });
     });
 
@@ -652,7 +672,6 @@ $(document).ready(function () {
         $(this).slideLeftHide(function () {
             $('#navbar .showall').slideLeftShow();
         });
-        $('.statbulb.ready').parent().parent().parent().slideUp();
         $('.statbulb.stored').parent().parent().parent().slideUp();
     });
     // navbar show all stories
@@ -661,7 +680,6 @@ $(document).ready(function () {
         $(this).slideLeftHide(function () {
             $('#navbar .shownew').slideLeftShow();
         });
-        $('.statbulb.ready').parent().parent().parent().slideDown();
         $('.statbulb.stored').parent().parent().parent().slideDown();
     });
 
@@ -689,15 +707,46 @@ $(document).ready(function () {
     });
 
     // next/prev page
+    $(document).on('click', '#page_list .first', function (event) {
+        event.preventDefault(); // stop href from messing up things
+        if (fimfic.page > 1) {
+            fimfic.page = 1;
+            $('#wrapper').fadeOut(function () {
+                $('#page_list .page').text(fimfic.page);
+                fimfic.switchList(function () {
+                    $('#wrapper').fadeIn();
+                }); 
+            });
+        }
+    });
     $(document).on('click', '#page_list .prev', function (event) {
         event.preventDefault(); // stop href from messing up things
-        fimfic.page -= 1;
-        fimfic.switchList();
+        if (fimfic.page > 1) {
+            fimfic.page -= 1;
+            $('#wrapper').fadeOut(function () {
+                $('#page_list .page').text(fimfic.page);
+                fimfic.switchList(function () {
+                    $('#wrapper').fadeIn();
+                }); 
+            });
+        }
     });
     $(document).on('click', '#page_list .next', function (event) {
         event.preventDefault(); // stop href from messing up things
-        fimfic.page += 1;
-        fimfic.switchList();
+        if (fimfic.currentListedStories > 0) {
+            fimfic.page += 1;
+            $('#wrapper').fadeOut(function () {
+                $('#page_list .page').text(fimfic.page);
+                fimfic.switchList(function () {
+                    $('#wrapper').fadeIn();
+                });
+            });
+        } else {
+            $('#status span').text("No more pages").show();
+            $('#status').fadeIn(400, function () {
+                $('#status').delay(2000).fadeOut(400);
+            });
+        }
     });
 
     // fim bar
