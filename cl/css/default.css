@@ -118,7 +118,7 @@ body {
 	cursor: pointer;
 }
 .story .head {
-	margin-right: 20px;
+	margin-right: 30px;
 }
 /* looks better keeping it light when it dark mode */
 /*.dark .story .head h2 {
@@ -148,7 +148,7 @@ body {
 .story .head .statback {
 	position: relative;
 	top: 0;
-	right: -20px;
+	right: -30px;
 	width: 16px;
 	height: 16px;
 	border-radius: 8px;
@@ -216,6 +216,51 @@ body {
 	height: 0;
 	clear: both;
 }
+
+.story .delete {
+	position: relative;
+	top: -3pt;
+	right: -14pt;
+	float: right;
+	padding: 3pt 1pt 3pt 3pt;
+	border-radius: 2pt;
+}
+.story .fim {
+	display: block;
+	position: relative;
+	top: -3pt;
+	right: -6pt;
+	float: right;
+	padding: 3pt 1pt 3pt 3pt;
+	border-radius: 2pt;
+	color: #333;
+}
+.story:hover .delete {
+	background: #c55;
+}
+.story:hover .fim {
+	background: #cc5;
+}
+.story .drop {
+	background: #33e;
+	position: relative;
+	top: 30pt;
+	float: right;
+}
+.story .delete:hover .drop {
+	display: block;
+}
+/*.story .head .statback {
+	position: relative;
+	top: 0;
+	right: -20px;
+	width: 16px;
+	height: 16px;
+	border-radius: 8px;
+	background: #4c4c4c;
+	float: right;
+	box-shadow: 0px 0px 3px #999;
+}*/
 
 
 
@@ -395,7 +440,7 @@ body {
 .story-controls.control .change:first-child {
 	border-radius: 5pt 0 0 0;
 }
-.story-controls.change .change:last-child {
+.story-controls.control .change:last-child {
 	border-radius: 0 5pt 0 0;
 }
 .light .icon-bg:before {

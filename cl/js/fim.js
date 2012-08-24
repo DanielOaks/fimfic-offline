@@ -70,9 +70,9 @@ var fimfic = {
     updateStories: function (callback) {
         fimfic.listStories(function (code) {
 
-            // replace db stories with listed stories
+            // todo: replace db stories with listed stories
 
-            callback.call(code);
+            callback.call();
         });
     },
 
@@ -119,7 +119,7 @@ var fimfic = {
         request.fail(function(jqXHR, textStatus) {
             fimfic.isOnline = false;
             fimfic.isLoggedIn = false;
-            fimfic.listStoriesStatus = 'success';
+            fimfic.listStoriesStatus = 'fail';
             callback.call();
         });
     },
@@ -139,6 +139,8 @@ var fimfic = {
                 story.append(storyheader);
 
                 storyheader.append($('<div class="statback"><div class="statbulb notready"></div></div>'));
+                storyheader.append($('<div class="delete" style="display: none;"><i class="icon-trash"></i></div>'));
+                storyheader.append($('<a class="fim" href="http://fimfiction.net/story/'+this.id+'"><i class="icon-globe"></i></a>'));
 
                 storyheader.append($('<h2></h2>').text(this.title));
                 storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
@@ -183,6 +185,8 @@ var fimfic = {
                     story.append(storyheader);
 
                     storyheader.append($('<div class="statback"><div class="statbulb stored"></div></div>'));
+                    storyheader.append($('<div class="delete"><i class="icon-trash"></i></div>'));
+                    storyheader.append($('<a class="fim" href="http://fimfiction.net/story/'+this.id+'"><i class="icon-globe"></i></a>'));
 
                     storyheader.append($('<h2></h2>').text(this.title));
                     storyheader.append($('<span>&nbsp;&nbsp;by </span>'));
@@ -271,8 +275,10 @@ var fimfic = {
 
                 var storybody = $('[fim_id='+data.story.id+'] .body')
 
-                storybody.prepend($('<img class="storyimage" />').attr('src', 'http:'+data.story.image));
-                storybody.append($('<div class="storyimagefix"></div>'));
+                if (storybody.parent().find('.storyimage').length == 0) {
+                    storybody.prepend($('<img class="storyimage" />').attr('src', 'http:'+data.story.image));
+                    storybody.append($('<div class="storyimagefix"></div>'));
+                }
 
                 // get image - store in story_pics store as a base64 string,
                 //  to put into an image tag later
@@ -366,6 +372,26 @@ var fimfic = {
         });
     },
 
+    // deletes story from database
+    deleteStory: function (id, callback) {
+        fimfic.story_info.delete(id, function () {
+            fimfic.story_html.delete(id, function () {
+                fimfic.story_pics.delete(id, function () {
+                    callback.call();
+                });
+            });
+        });
+    },
+    clearStories: function (callback) {
+        fimfic.story_info.clear(function () {
+            fimfic.story_html.clear(function () {
+                fimfic.story_pics.clear(function () {
+                    callback.call();
+                });
+            });
+        });
+    },
+
 
     // set isLoggedIn variable, given html
     //
@@ -398,6 +424,16 @@ var fimfic = {
             fimfic.generic_store.count('meta', function (value) {
                 callback.call(this, value);
             });
+        },
+        delete: function (id, callback) {
+            fimfic.generic_store.delete('meta', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        clear: function (callback) {
+            fimfic.generic_store.clear('meta', function (value) {
+                callback.call();
+            });
         }
     },
     story_info: {
@@ -412,6 +448,16 @@ var fimfic = {
         count: function (callback) {
             fimfic.generic_store.count('story_info', function (value) {
                 callback.call(this, value);
+            });
+        },
+        delete: function (id, callback) {
+            fimfic.generic_store.delete('story_info', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        clear: function (callback) {
+            fimfic.generic_store.clear('story_info', function (value) {
+                callback.call();
             });
         }
     },
@@ -428,6 +474,16 @@ var fimfic = {
             fimfic.generic_store.count('story_html', function (value) {
                 callback.call(this, value);
             });
+        },
+        delete: function (id, callback) {
+            fimfic.generic_store.delete('story_html', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        clear: function (callback) {
+            fimfic.generic_store.clear('story_html', function (value) {
+                callback.call();
+            });
         }
     },
     story_pics: {
@@ -442,6 +498,16 @@ var fimfic = {
         count: function (callback) {
             fimfic.generic_store.count('story_pics', function (value) {
                 callback.call(this, value);
+            });
+        },
+        delete: function (id, callback) {
+            fimfic.generic_store.delete('story_pics', id, function (value) {
+                callback.call(this, value);
+            });
+        },
+        clear: function (callback) {
+            fimfic.generic_store.clear('story_pics', function (value) {
+                callback.call();
             });
         }
     },
@@ -470,7 +536,7 @@ var fimfic = {
             promise.fail(function (error, event) {
                 console.log('generic_store.get failed: ', store, id, error, event);
 
-                callback.call(null);
+                callback.call();
             });
         },
 
@@ -489,7 +555,35 @@ var fimfic = {
             promise.fail(function (error, event) {
                 console.log('generic_store.count failed: ', store, id, error, event);
 
-                callback.call(null);
+                callback.call();
+            });
+        },
+
+        delete: function (store, id, callback) {
+            var promise = $.indexedDB('fimfic_offline').objectStore(store).delete(id);
+
+            promise.done(function (value, event) {
+                callback.call();
+            });
+
+            promise.fail(function (error, event) {
+                console.log('generic_store.delete failed: ', store, id, error, event);
+
+                callback.call();
+            });
+        },
+
+        clear: function (store, callback) {
+            var promise = $.indexedDB('fimfic_offline').objectStore(store).clear();
+
+            promise.done(function (value, event) {
+                callback.call();
+            });
+
+            promise.fail(function (error, event) {
+                console.log('generic_store.clear failed: ', store, id, error, event);
+
+                callback.call();
             });
         }
     }
@@ -547,19 +641,40 @@ $(document).ready(function () {
     $(document).on('click', '#navbar .clearall', function (event) {
         event.preventDefault(); // stop href from messing up things
         if (confirm('Clear all stories?')) {
-            $('#stories').fadeOut();
+            $('.story .statbulb').removeClass('ready').removeClass('stored').addClass('loading');
+            fimfic.clearStories(function () {
+                $('.story .statbulb').removeClass('loading').addClass('notready');
+            });
         }
+    });
+
+    // story functions
+    $(document).on('click', '.story .delete', function (event) {
+        event.preventDefault();
+        var story = $(this).parent().parent();
+        var id = parseInt(story.attr('fim_id'));
+        story.find('.statbulb').removeClass('ready').removeClass('stored').addClass('loading');
+        fimfic.deleteStory(id, function () {
+            story.find('.statbulb').removeClass('loading').addClass('notready');
+            story.find('.head .delete').hide();
+        });
     });
 
     // fim bar
     function backfromstory () {
+        var id = $('#current_story').attr('fim_id');
         $('#footer').fadeOut(200);
         $('.story-controls').slideUp(200, function () {
             $('.story-controls').remove();
             $('#current_story').fadeOut(200, function () {
                 $(this).remove();
-                $('#stories').fadeIn();
                 $('#footer').fadeIn();
+
+                $('#stories').fadeIn(200, function () {
+                    $('html,body').animate({
+                        scrollTop: '+=' + ($('.story[fim_id='+id+']').offset().top - 10) + 'px'
+                    }, 'fast');
+                });
             });
         });
     }
@@ -631,6 +746,11 @@ $(document).ready(function () {
 
     // setup story click handlers
     $(document).on('click', '#stories .story', function(event) {
+        if (($(this).find('.head .delete:hover').length > 0) || ($(this).find('.head .fim:hover').length > 0)) {
+            // user clicked delete or fim button
+            return;
+        }
+
         if ($(this).find('.statbulb').hasClass('ready') || $(this).find('.statbulb').hasClass('stored')) {
             var story_id = parseInt($(this).attr('fim_id'));
 
@@ -684,6 +804,7 @@ $(document).ready(function () {
                                                 fimfic.meta.get('font-size', function (value) {
                                                     value = ((typeof value === "undefined") || (value === null)) ? '100%' : value;
                                                     $('#current_story .body').css('font-size', value, true);
+                                                    $('#current_story').attr('fim_id', story_id);
 
                                                     $('#current_story').fadeIn(200, function () {
                                                         $('#footer').fadeIn();
@@ -705,72 +826,72 @@ $(document).ready(function () {
             });
         } else if ($(this).find('.statbulb').hasClass('notready')) {
             // download this story to our cache
-            var bulb = $(this).find('.statbulb');
+            var story = $(this);
+            var bulb = story.find('.statbulb');
             $(bulb).removeClass('notready').addClass('loading');
-            fimfic.download_info($(this).attr('fim_id'), function (data, getHtml) {
+            fimfic.download_info(story.attr('fim_id'), function (data, getHtml) {
                 fimfic.download_html(data.story.id, bulb, function () {
-                    // do nothing
+                    story.find('.head .delete').show();
                 });
             });
         }
     });
 
     // Initialise everything
-    fimfic.initConnection(function () {
+    fimfic.updateStories(function (code) {
         fimfic.initDatabase(function () {
             fimfic.showDatabaseStories(function () {
 
                 fimfic.meta.get('color', function (value) {
                     value = ((typeof value === "undefined") || (value === null)) ? 'light' : value;
                     $('body').addClass(value);
-                    fimfic.updateStories(function (code) {
 
-                        if ((fimfic.isCached) && (!fimfic.isOnline)) {
+                    if ((fimfic.isCached) && (!fimfic.isOnline)) {
+                        $('#status span').fadeOut(400, function () {
+                            $('#status span').text("Stories are cached, operating in offline mode").fadeIn();
+                        });
+                        $('#status').delay(3000).fadeOut(400);
+                    } else if (fimfic.isLoggedIn) {
+                        fimfic.showListedStories();
+
+                        if (fimfic.listStoriesStatus == 'success') {
                             $('#status span').fadeOut(400, function () {
-                                $('#status span').text("Stories are cached, operating in offline mode").fadeIn();
+                                $('#status span').text("Checking whether anything's updated").fadeIn();
                             });
-                            $('#status').delay(2000).fadeOut(400);
-                        } else if (fimfic.isLoggedIn) {
-                            fimfic.showListedStories();
+                            // actually check for updates and stuff, you know
 
-                            if (fimfic.listStoriesStatus == 'success') {
+                            if (fimfic.isCached) {
                                 $('#status span').fadeOut(400, function () {
-                                    $('#status span').text("Checking whether anything's updated").fadeIn();
+                                    $('#status span').text("Loaded!").fadeIn();
+                                    $('#status').delay(3000).fadeOut(400);
                                 });
-                                // actually check for updates and stuff, you know
-
-                                if (fimfic.isCached) {
-                                    $('#status span').fadeOut(400, function () {
-                                        $('#status span').text("Loaded!").fadeIn();
-                                        $('#status').delay(2000).fadeOut(400);
-                                    });
-                                } else {
-                                    $('#status span').fadeOut(400, function () {
-                                        $('#status span').text("Click on a story to store it offline. Click again to open it!").fadeIn();
-                                        $('#status').delay(8000).fadeOut(400);
-                                    });
-                                }
-
                             } else {
                                 $('#status span').fadeOut(400, function () {
-                                    $('#status span').text("Failed to access Read Later list").fadeIn();
+                                    $('#status span').text("Click on a story to store it offline. Click again to open it!").fadeIn();
+                                    $('#status').delay(8000).fadeOut(400);
                                 });
                             }
-                        } else if (fimfic.isOnline) {
-                            $('#status span').fadeOut(400, function () {
-                                $('#status span').text("Login to FimFic to display your Read Later stories").fadeIn();
-                                fimfic.switchToBrowse();
-                                $('#navbar .readlater').hide();
-                                $('#navbar .browse').hide();
-                            });
 
-                            // switch to Browse list
                         } else {
                             $('#status span').fadeOut(400, function () {
-                                $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
+                                $('#status span').text("Failed to access Read Later list").fadeIn();
                             });
                         }
-                    });
+                    } else if (fimfic.isOnline) {
+                        $('#status span').fadeOut(400, function () {
+                            $('#status span').text("Login to FimFic to display your Read Later stories").fadeIn();
+                            $('#status').delay(8000).fadeOut(400);
+                            fimfic.switchToBrowse();
+                            $('#navbar .readlater').hide();
+                            $('#navbar .browse').hide();
+                        });
+
+                        // switch to Browse list
+                    } else {
+                        $('#status span').fadeOut(400, function () {
+                            $('#status span').text("You need internet access to download stories (or cross-origin ajax error)").fadeIn();
+                        });
+                    }
 
                 });
             });

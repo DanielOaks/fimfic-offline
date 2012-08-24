@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 @font-face {
   font-family: 'fim-offline-icons';
   src: url("../font/fim-offline-icons.eot");
@@ -22,13 +24,15 @@
 /* fix buttons height */
   line-height: 1em;
 /* you can be more comfortable with increased icons size */
-/* font-zize: 120%; */
+/* font-size: 120%; */
 }
 
 .icon-plus:before { content: '\2b'; } /* '+' */
 .icon-minus:before { content: '\2d'; } /* '-' */
 .icon-info:before { content: '\2139'; } /* 'ℹ' */
 .icon-sun-inv:before { content: '\2600'; } /* '☀' */
+.icon-trash:before { content: '\e729'; } /* '' */
 .icon-left-open:before { content: '\e75d'; } /* '' */
 .icon-font:before { content: '\e779'; } /* '' */
 .icon-moon-inv:before { content: '\e7a0'; } /* '' */
+.icon-globe:before { content: '𝌍'; } /* '\1d30d' */
