@@ -24,6 +24,7 @@ body {
 
 .dark #navbar {
 	background-color: #303738;
+	border-bottom: 2px solid #1e1404;
 }
 #navbar {
 	padding: 5pt 10pt;
